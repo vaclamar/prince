@@ -1,50 +1,14 @@
 package vm;
 
-import cz.yellen.xpg.common.action.*;
-import cz.yellen.xpg.common.stuff.GameObject;
-import cz.yellen.xpg.common.stuff.GameSituation;
+import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.stuff.GameStatus;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Set;
+import vm.test.Game;
 
 
 public class VmStrategyTest {
-
-    class Game implements GameSituation {
-
-        public void doAction(cz.yellen.xpg.common.action.Action action){
-
-        }
-
-        @Override
-        public int getStepNr() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public boolean isGameOver() {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public GameStatus getStatus() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public int getGameId() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public Set<GameObject> getGameObjects() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }
 
     private VmStrategy strategy;
 
@@ -54,12 +18,50 @@ public class VmStrategyTest {
     }
 
     @Test
-    public void testfirstLevelTest() throws Exception {
-        Game game
-                = new Game();
-        while (true) {
-            strategy.step(game);
+    public void testL1() throws Exception {
+        Game game = new Game("W__X__G");
+        test(game, 200);
+    }
+
+    @Test
+    public void testL1ChangeDirection() throws Exception {
+        Game game = new Game("G__X__W");
+        test(game, 200);
+    }
+
+    @Test
+    public void testL2() throws Exception {
+        Game game = new Game("W__X_U__U_G");
+        test(game, 200);
+    }
+
+
+    @Test
+    public void testL2UG() throws Exception {
+        Game game = new Game("W__X_U__UG");
+        test(game, 200);
+    }
+
+
+    @Test
+    public void testL2WithChangeDirection() throws Exception {
+        Game game = new Game("G__X_U__U_W");
+        test(game, 200);
+    }
+
+
+    private void test(Game game, int maxSteps) {
+        while (game.getStatus().equals(GameStatus.CONTINUE)) {
+            System.out.println(game);
+            Action action = strategy.step(game);
+            System.out.println(action.getClass().getName());
+            game.doAction(action);
+            maxSteps--;
+            if (maxSteps < 0) {
+                Assert.fail("max steps used");
+            }
         }
+        Assert.assertEquals("end as " + game.getStatus(), GameStatus.VICTORY, game.getStatus());
     }
 
 
