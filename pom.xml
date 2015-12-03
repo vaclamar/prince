@@ -15,12 +15,12 @@
 		<dependency>
 			<groupId>cz.yellen</groupId>
 			<artifactId>xpg-client-ws</artifactId>
-			<version>0.1-20151202.185015-1</version>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cz.yellen</groupId>
 			<artifactId>xpg-common</artifactId>
-			<version>0.1-20151202.192400-1</version>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
