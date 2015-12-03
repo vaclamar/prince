@@ -59,7 +59,7 @@ public class VmStrategy implements GameStrategy {
                 if (gate.getPosition() < prince.getPosition()) {
                     return new Move(Direction.BACKWARD);
                 }
-            } else if (pit != null) {
+            } if (pit != null) {
                 if ( prince.getPosition() < pit.getPosition() && strategy.getDirection().equals(Direction.FORWARD)) {
                     return new Jump((Direction.FORWARD));
                 }
@@ -67,7 +67,7 @@ public class VmStrategy implements GameStrategy {
                     return new Jump((Direction.BACKWARD));
                 }
 
-            } else if (wall != null && wall.getPosition() > prince.getPosition()) {
+            } if (wall != null && wall.getPosition() > prince.getPosition()) {
                 changeStrategy();
                 return new Wait();
             }
