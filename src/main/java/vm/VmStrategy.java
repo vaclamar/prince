@@ -6,8 +6,6 @@ package vm;
  * and open the template in the editor.
  */
 //package vma;
-
-
 import cz.yellen.xpg.common.GameStrategy;
 import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.action.Direction;
@@ -24,12 +22,14 @@ import cz.yellen.xpg.common.stuff.GameSituation;
  */
 public class VmStrategy implements GameStrategy {
 
-    Action strategy = new Jump(Direction.FORWARD);
+    Move strategy = new Move(Direction.FORWARD);
+
     public Action step(GameSituation gs) {
         try {
             GameObject prince = null;
             GameObject gate = null;
             GameObject wall = null;
+            GameObject pit = null;
             //init
             for (GameObject go : gs.getGameObjects()) {
                 if (go.getType().equalsIgnoreCase("prince")) {
@@ -43,6 +43,10 @@ public class VmStrategy implements GameStrategy {
                 if (go.getType().equalsIgnoreCase("wall")) {
                     wall = go;
                 }
+
+                if (go.getType().equalsIgnoreCase("pit")) {
+                    pit = go;
+                }
             }
 
             if (gate != null) {
@@ -55,8 +59,17 @@ public class VmStrategy implements GameStrategy {
                 if (gate.getPosition() < prince.getPosition()) {
                     return new Move(Direction.BACKWARD);
                 }
-            }else if (wall!=null && wall.getPosition() > prince.getPosition()){
+            } else if (pit != null) {
+                if ( prince.getPosition() < pit.getPosition() && strategy.getDirection().equals(Direction.FORWARD)) {
+                    return new Jump((Direction.FORWARD));
+                }
+                if ( prince.getPosition() > pit.getPosition() && strategy.getDirection().equals(Direction.BACKWARD)){
+                    return new Jump((Direction.BACKWARD));
+                }
+
+            } else if (wall != null && wall.getPosition() > prince.getPosition()) {
                 changeStrategy();
+                return new Wait();
             }
             return strategy;
         } catch (Throwable th) {
@@ -64,9 +77,10 @@ public class VmStrategy implements GameStrategy {
             return new Wait();
         }
     }
-    void changeStrategy(){
-        if(((Jump)strategy).getDirection()==Direction.FORWARD){
-            strategy=new Jump(Direction.BACKWARD);
+
+    void changeStrategy() {
+        if (((Move) strategy).getDirection() == Direction.FORWARD) {
+            strategy = new Move(Direction.BACKWARD);
         }
 
     }
