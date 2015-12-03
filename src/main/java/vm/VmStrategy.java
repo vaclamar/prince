@@ -23,6 +23,7 @@ import cz.yellen.xpg.common.stuff.GameSituation;
 public class VmStrategy implements GameStrategy {
 
     Move strategy = new Move(Direction.FORWARD);
+    Game game = new Game();
 
     public Action step(GameSituation gs) {
         try {
@@ -54,12 +55,13 @@ public class VmStrategy implements GameStrategy {
                     return new Enter(gate);
                 }
                 if (gate.getPosition() > prince.getPosition()) {
-                    return new Move(Direction.FORWARD);
+                    return moveForward();
                 }
                 if (gate.getPosition() < prince.getPosition()) {
-                    return new Move(Direction.BACKWARD);
+                    return moveBack();
                 }
             } else if (pit != null) {
+                game.getMap().put(game.getPosition()+pit.getPosition(), pit);
                 if ( prince.getPosition() < pit.getPosition() && strategy.getDirection().equals(Direction.FORWARD)) {
                     return new Jump((Direction.FORWARD));
                 }
@@ -69,7 +71,7 @@ public class VmStrategy implements GameStrategy {
 
             } else if (wall != null && wall.getPosition() > prince.getPosition()) {
                 changeStrategy();
-                return new Wait();
+                return step(gs);
             }
             return strategy;
         } catch (Throwable th) {
@@ -84,4 +86,25 @@ public class VmStrategy implements GameStrategy {
         }
 
     }
+
+    Move moveBack(){
+        game.setPosition(game.getPosition()-1);
+        return new Move(Direction.BACKWARD);
+    }
+
+    Move moveForward(){
+        game.setPosition(game.getPosition()+1);
+        return new Move(Direction.FORWARD);
+    }
+
+    Jump jumpBack(){
+        game.setPosition(game.getPosition()-2);
+        return new Jump(Direction.BACKWARD);
+    }
+
+    Jump jumpForward(){
+        game.setPosition(game.getPosition()+2);
+        return new Jump(Direction.FORWARD);
+    }
+
 }
