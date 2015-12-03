@@ -24,7 +24,7 @@ import cz.yellen.xpg.common.stuff.GameSituation;
  */
 public class VmStrategy implements GameStrategy {
 
-    Action strategy = new Move(Direction.FORWARD);
+    Action strategy = new Jump(Direction.FORWARD);
     public Action step(GameSituation gs) {
         try {
             GameObject prince = null;
@@ -55,7 +55,7 @@ public class VmStrategy implements GameStrategy {
                 if (gate.getPosition() < prince.getPosition()) {
                     return new Move(Direction.BACKWARD);
                 }
-            }else if (wall!=null){
+            }else if (wall!=null && wall.getPosition() > prince.getPosition()){
                 changeStrategy();
             }
             return strategy;
@@ -65,7 +65,7 @@ public class VmStrategy implements GameStrategy {
         }
     }
     void changeStrategy(){
-        if(((Move)strategy).getDirection()==Direction.FORWARD){
+        if(((Jump)strategy).getDirection()==Direction.FORWARD){
             strategy=new Jump(Direction.BACKWARD);
         }
 
