@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>vm</groupId>
+	<artifactId>prince</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+            <repositories>
+                    <repository>
+                            <id>yellen-artifactory</id>
+                            <name>maven repo for storing dependencies</name>
+                            <url>http://rimmer.yellen.cz:8081/artifactory/ext-snapshot-local/</url>
+                    </repository>
+            </repositories>
+	<dependencies>
+		<dependency>
+			<groupId>cz.yellen</groupId>
+			<artifactId>xpg-client-ws</artifactId>
+			<version>0.1-20151202.185015-1</version>
+		</dependency>
+		<dependency>
+			<groupId>cz.yellen</groupId>
+			<artifactId>xpg-common</artifactId>
+			<version>0.1-20151202.192400-1</version>
+		</dependency>
+	</dependencies>
+</project>
