@@ -25,7 +25,8 @@ public class VmStrategyTest {
 
     @Test
     public void testL1ChangeDirection() throws Exception {
-        Game game = new Game("G__X__W");
+//        Game game = new Game("G__X__W");
+        Game game = new Game("G_XW");
         test(game, 200);
     }
 
