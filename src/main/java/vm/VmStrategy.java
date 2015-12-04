@@ -6,7 +6,6 @@ package vm;
  * and open the template in the editor.
  */
 //package vma;
-
 import cz.yellen.xpg.common.GameStrategy;
 import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.action.Direction;
@@ -23,6 +22,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static cz.yellen.xpg.common.action.Direction.*;
+import cz.yellen.xpg.common.action.PickUp;
+import cz.yellen.xpg.common.action.Use;
 import static vm.ForwardBackwardUtil.*;
 
 /**
@@ -37,7 +38,9 @@ public class VmStrategy implements GameStrategy {
             GameObject prince = getSingle(gs, "prince");
             GameObject gate = getSingle(gs, "gate");
             GameObject wall = getSingle(gs, "wall");
-            List<GameObject> pits = gs.getGameObjects().stream().filter(typeFilter("pit")).collect(Collectors.toList());
+            GameObject sword = getSingle(gs, "sword");
+            List<GameObject> pits = getList(gs, "pit");
+            List<GameObject> guards = getList(gs, "guard");
 
             if (gate != null) {
                 if (prince.getPosition() == gate.getPosition()) {
@@ -51,11 +54,36 @@ public class VmStrategy implements GameStrategy {
                 }
             }
 
+            if (sword != null) {
+                if (prince.getPosition() == sword.getPosition()) {
+                    return new PickUp(sword);
+                }
+                if (sword.getPosition() > prince.getPosition()) {
+                    return new Move(FORWARD);
+                }
+                if (sword.getPosition() < prince.getPosition()) {
+                    return new Move(BACKWARD);
+                }
+            }
+
             for (GameObject pit : pits) {
                 if ((pit.getPosition() - prince.getPosition()) * getsign(direction) > 0) {
                     return new Jump(direction);
                 }
             }
+
+            for (GameObject guard : guards) {
+                if ((guard != null && (guard.getPosition() - prince.getPosition()) * getsign(direction) > 0) ) {
+                    Optional<GameObject> princeSword = prince.getStuff().stream().filter(typeFilter("sword")).findFirst();
+                    if (!princeSword.isPresent()) {
+                        direction = changeDirection(direction);
+                        return step(gs);
+                    } else {
+                        return new Use(princeSword.get(), guard);
+                    }
+                }
+            }
+
             if (wall != null && (wall.getPosition() - prince.getPosition()) * getsign(direction) > 0) {
                 direction = changeDirection(direction);
                 return step(gs);
@@ -65,6 +93,11 @@ public class VmStrategy implements GameStrategy {
             th.printStackTrace();
             return new Wait();
         }
+    }
+
+    public List<GameObject> getList(GameSituation gs, String type) {
+        List<GameObject> pits = gs.getGameObjects().stream().filter(typeFilter(type)).collect(Collectors.toList());
+        return pits;
     }
 
     private GameObject getSingle(GameSituation gs, String type) {
@@ -80,6 +113,5 @@ public class VmStrategy implements GameStrategy {
     private Predicate<GameObject> typeFilter(String type) {
         return go -> go.getType().equals(type);
     }
-
 
 }
