@@ -17,15 +17,24 @@ public class MyGameStrategy implements GameStrategy {
 
 	private GameObject prince;
 	private GameObject sword;
+    private GameObject bottle;
 	private Set<GameObject> gameObjects;
 	private Action action;
 	private Direction direction = Direction.FORWARD;
 
 	public Action step(GameSituation situation) {
 
+
 		action = null;
 		gameObjects = situation.getGameObjects();
 		prince = findPrince();
+        if(prince.getProperty("health").equals("1")) {
+            for ( GameObject go : prince.getStuff()) {
+                if(go.getType().equals("bottle")) {
+                    return new Use(bottle, prince);
+                }
+            }
+        }
 
 		if (gameObjects.size() == 1) {
 			return move();
@@ -44,6 +53,17 @@ public class MyGameStrategy implements GameStrategy {
 			for (GameObject gameObject : gameObjects) {
 				if (gameObject.getType().equals("sword")) {
 					action = actionForSword(gameObject);
+					if (action == null) {
+						continue;
+					} else {
+						return action;
+					}
+				}
+			}
+
+           for (GameObject gameObject : gameObjects) {
+				if (gameObject.getType().equals("bottle")) {
+					action = actionForBottle(gameObject);
 					if (action == null) {
 						continue;
 					} else {
@@ -97,6 +117,13 @@ public class MyGameStrategy implements GameStrategy {
 	// ACTIONS FOR OBJECTS
 	
 	private Action actionForSword(GameObject gameObject) {
+		if (gameObject.getPosition() == prince.getPosition()) {
+			return pickUp(gameObject);
+		}
+		return null;
+	}
+
+    private Action actionForBottle(GameObject gameObject) {
 		if (gameObject.getPosition() == prince.getPosition()) {
 			return pickUp(gameObject);
 		}
