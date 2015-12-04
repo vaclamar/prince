@@ -8,6 +8,7 @@ import cz.yellen.xpg.common.action.Jump;
 import cz.yellen.xpg.common.action.Move;
 import cz.yellen.xpg.common.action.PickUp;
 import cz.yellen.xpg.common.action.Use;
+import cz.yellen.xpg.common.action.Wait;
 import cz.yellen.xpg.common.stuff.GameObject;
 import cz.yellen.xpg.common.stuff.GameSituation;
 
@@ -77,8 +78,20 @@ public class MyGameStrategy implements GameStrategy {
                         action = actionForGuard(gameObject);
                     } else {
                         changeDirection();
+                        return step(situation);
                     }
 
+                    if (action == null) {
+                        continue;
+                    } else {
+                        return action;
+                    }
+                }
+            }
+
+            for (GameObject gameObject : gameObjects) {
+                if (gameObject.getType().equals("chopper")) {
+                    action = actionForChopper(gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -98,11 +111,11 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+             for (GameObject gameObject : gameObjects) {
                 if (gameObject.getType().equals("wall")) {
                     action = actionForWall(gameObject);
                     if (action == null) {
-                        continue;
+                        return step(situation);
                     } else {
                         return action;
                     }
@@ -165,6 +178,19 @@ public class MyGameStrategy implements GameStrategy {
         return null;
     }
 
+    private Action actionForChopper(GameObject chopper) {
+        if (chopper.getProperty("opening").equals("true") && !chopper.getProperty("closing").equals("true")) {
+            if (direction == Direction.FORWARD && chopper.getPosition() == prince.getPosition() + 1) {
+                return jump();
+            } else if (direction == Direction.BACKWARD && chopper.getPosition() == prince.getPosition() - 1) {
+                return jump();
+            }
+        } else {
+            return waitAction();
+        }
+        return null;
+    }
+
     private Action actionForGate(GameObject gameObject) {
         if (gameObject.getPosition() == prince.getPosition()) {
             return enterGate(gameObject);
@@ -217,6 +243,10 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action jump() {
         return new Jump(direction);
+    }
+
+    private Action waitAction() {
+        return new Wait();
     }
 
     private Action attack(GameObject enemy) {
