@@ -17,73 +17,69 @@ import cz.yellen.xpg.common.action.Wait;
 import cz.yellen.xpg.common.stuff.GameObject;
 import cz.yellen.xpg.common.stuff.GameSituation;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static cz.yellen.xpg.common.action.Direction.*;
+import static vm.ForwardBackwardUtil.*;
+
 /**
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
 public class VmStrategy implements GameStrategy {
 
-    Move strategy = new Move(Direction.FORWARD);
+    Direction direction = FORWARD;
 
     public Action step(GameSituation gs) {
         try {
-            GameObject prince = null;
-            GameObject gate = null;
-            GameObject wall = null;
-            GameObject pit = null;
-            //init
-            for (GameObject go : gs.getGameObjects()) {
-                if (go.getType().equalsIgnoreCase("prince")) {
-                    prince = go;
-                }
-
-                if (go.getType().equalsIgnoreCase("gate")) {
-                    gate = go;
-                }
-
-                if (go.getType().equalsIgnoreCase("wall")) {
-                    wall = go;
-                }
-
-                if (go.getType().equalsIgnoreCase("pit")) {
-                    pit = go;
-                }
-            }
+            GameObject prince = getSingle(gs, "prince");
+            GameObject gate = getSingle(gs, "gate");
+            GameObject wall = getSingle(gs, "wall");
+            List<GameObject> pits = gs.getGameObjects().stream().filter(typeFilter("pit")).collect(Collectors.toList());
 
             if (gate != null) {
                 if (prince.getPosition() == gate.getPosition()) {
                     return new Enter(gate);
                 }
                 if (gate.getPosition() > prince.getPosition()) {
-                    return new Move(Direction.FORWARD);
+                    return new Move(FORWARD);
                 }
                 if (gate.getPosition() < prince.getPosition()) {
-                    return new Move(Direction.BACKWARD);
+                    return new Move(BACKWARD);
                 }
             }
-            if (pit != null) {
-                if (prince.getPosition() < pit.getPosition() && strategy.getDirection().equals(Direction.FORWARD)) {
-                    return new Jump((Direction.FORWARD));
-                }
-                if (prince.getPosition() > pit.getPosition() && strategy.getDirection().equals(Direction.BACKWARD)) {
-                    return new Jump((Direction.BACKWARD));
-                }
 
+            for (GameObject pit : pits) {
+                if ((pit.getPosition() - prince.getPosition()) * getsign(direction) > 0) {
+                    return new Jump(direction);
+                }
             }
-            if (wall != null && wall.getPosition() > prince.getPosition()) {
-                changeStrategy();
-                return new Wait();
+            if (wall != null && (wall.getPosition() - prince.getPosition()) * getsign(direction) > 0) {
+                direction = changeDirection(direction);
+                return step(gs);
             }
-            return strategy;
+            return new Move(direction);
         } catch (Throwable th) {
             th.printStackTrace();
             return new Wait();
         }
     }
 
-    void changeStrategy() {
-        if (((Move) strategy).getDirection() == Direction.FORWARD) {
-            strategy = new Move(Direction.BACKWARD);
+    private GameObject getSingle(GameSituation gs, String type) {
+        Optional<GameObject> first = gs.getGameObjects().stream().filter(typeFilter(type)).findFirst();
+        //TODO bad practise but dont know java 8 perfectly
+        if (first.isPresent()) {
+            return first.get();
+        } else {
+            return null;
         }
-
     }
+
+    private Predicate<GameObject> typeFilter(String type) {
+        return go -> go.getType().equals(type);
+    }
+
+
 }

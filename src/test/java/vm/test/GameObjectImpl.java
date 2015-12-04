@@ -10,8 +10,8 @@ import cz.yellen.xpg.common.stuff.GameObject;
  * To change this template use File | Settings | File Templates.
  */
 abstract class GameObjectImpl implements GameObject {
-    int absolutePossition=0;
-    int princePosition=0;
+    int absolutePossition = 0;
+    int princePosition = 0;
 
     protected GameObjectImpl(int absolutePossition) {
         this.absolutePossition = absolutePossition;
@@ -19,7 +19,7 @@ abstract class GameObjectImpl implements GameObject {
 
     @Override
     public int getPosition() {
-        return absolutePossition-princePosition;  //To change body of implemented methods use File | Settings | File Templates.
+        return absolutePossition - princePosition;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     int getAbsolutePossition() {

@@ -30,7 +30,7 @@ public class Game implements GameSituation {
     private boolean gameOver = false;
     private int princePosition;
     private Set<GameObjectImpl> gameObjects = new HashSet<>();
-    private GameStatus status=GameStatus.CONTINUE;
+    private GameStatus status = GameStatus.CONTINUE;
 
 
     public Game(String situation) {
@@ -98,7 +98,7 @@ public class Game implements GameSituation {
             Move move = (Move) a;
             int sign = getsign(move.getDirection());
             princePosition += sign;
-            if(gameObjects.stream().filter(go->go.getAbsolutePossition()==princePosition&&go.getType()=="wall").findFirst().isPresent()){
+            if (gameObjects.stream().filter(go -> go.getAbsolutePossition() == princePosition && go.getType() == "wall").findFirst().isPresent()) {
                 princePosition -= sign;
             }
         }
@@ -122,7 +122,7 @@ public class Game implements GameSituation {
         }
 
         gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get().setAbsolutePossition(princePosition);
-        if (gameObjects.stream().filter(go->go.getType().equals("pit")&&go.getAbsolutePossition()==princePosition).findFirst().isPresent()){
+        if (gameObjects.stream().filter(go -> go.getType().equals("pit") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
     }

@@ -63,6 +63,7 @@ public class VmStrategyTest {
             }
         }
         Assert.assertEquals("end as " + game.getStatus(), GameStatus.VICTORY, game.getStatus());
+        System.out.flush();
     }
 
 

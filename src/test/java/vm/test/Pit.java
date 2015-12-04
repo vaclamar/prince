@@ -12,7 +12,7 @@ import java.util.Set;
  * Time: 20:54
  * To change this template use File | Settings | File Templates.
  */
-public class Pit extends GameObjectImpl{
+public class Pit extends GameObjectImpl {
 
     protected Pit(int absolutePossition) {
         super(absolutePossition);
