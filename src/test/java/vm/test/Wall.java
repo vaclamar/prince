@@ -14,35 +14,12 @@ import java.util.Set;
  */
 public class Wall extends GameObjectImpl {
 
-
-    private int position;
-
     protected Wall(int absolutePossition) {
         super(absolutePossition);
     }
 
     @Override
-    public int getId() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public String getType() {
         return "wall";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getProperty(String s) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Set<GameObject> getStuff() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

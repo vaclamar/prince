@@ -2,6 +2,11 @@ package vm.test;
 
 import cz.yellen.xpg.common.stuff.GameObject;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
@@ -12,6 +17,9 @@ import cz.yellen.xpg.common.stuff.GameObject;
 abstract class GameObjectImpl implements GameObject {
     int absolutePossition = 0;
     int princePosition = 0;
+
+    Map<String, String> properties = new HashMap<>();
+    private Set<GameObject> stuff = new HashSet<>();
 
     protected GameObjectImpl(int absolutePossition) {
         this.absolutePossition = absolutePossition;
@@ -36,5 +44,25 @@ abstract class GameObjectImpl implements GameObject {
 
     void setPrincePosition(int princePosition) {
         this.princePosition = princePosition;
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return properties;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getProperty(String s) {
+        return properties.get(s);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int getId() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Set<GameObject> getStuff() {
+        return stuff;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

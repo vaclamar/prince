@@ -1,6 +1,7 @@
 package vm.test;
 
 import cz.yellen.xpg.common.action.Action;
+import cz.yellen.xpg.common.action.Direction;
 import cz.yellen.xpg.common.action.Enter;
 import cz.yellen.xpg.common.action.Jump;
 import cz.yellen.xpg.common.action.Move;
@@ -15,8 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static vm.ForwardBackwardUtil.getsign;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,9 +95,9 @@ public class Game implements GameSituation {
             case "wall":
                 return 'W';
             case "sword":
-                return  'I';
+                return 'I';
             case "guard":
-                return  'Y';
+                return 'Y';
 
         }
         return '_';  //To change body of created methods use File | Settings | File Templates.
@@ -139,8 +138,8 @@ public class Game implements GameSituation {
         }
         if (a instanceof Use) {
             Use use = (Use) a;
-            if( use.getTarget().getType().equals("guard") && use.getInstrument().getType().equals("sword")){
-                use.getTarget().getProperties().put("dead","true");
+            if (use.getTarget().getType().equals("guard") && use.getInstrument().getType().equals("sword")) {
+                use.getTarget().getProperties().put("dead", "true");
             }
         }
 
@@ -148,6 +147,17 @@ public class Game implements GameSituation {
         if (gameObjects.stream().filter(go -> go.getType().equals("pit") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
+    }
+
+    private int getsign(Direction direction) {
+        switch (direction) {
+            case FORWARD:
+                return +1;
+            case BACKWARD:
+                return -1;
+        }
+        System.err.println("undefined direction "+ direction);
+        return 0;
     }
 
     @Override

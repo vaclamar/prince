@@ -5,16 +5,17 @@ import cz.yellen.xpg.common.stuff.GameStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import princeGame.MyGameStrategy;
 import vm.test.Game;
 
 
 public class VmStrategyTest {
 
-    private VmStrategy strategy;
+    private MyGameStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
-        strategy = new VmStrategy();
+        strategy = new MyGameStrategy();
     }
 
     @Test
