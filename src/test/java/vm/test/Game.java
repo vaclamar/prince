@@ -38,7 +38,7 @@ public class Game implements GameSituation {
             switch (situation.getBytes()[i]) {
                 case 'W':
                 case 'w':
-                    gameObjects.add(new Wall(i));
+                    gameObjects.add(new WallX(i));
                     break;
                 case 'X':
                 case 'x':

@@ -12,12 +12,12 @@ import java.util.Set;
  * Time: 15:54
  * To change this template use File | Settings | File Templates.
  */
-public class Wall extends GameObjectImpl {
+public class WallX extends GameObjectImpl {
 
 
     private int position;
 
-    protected Wall(int absolutePossition) {
+    protected WallX(int absolutePossition) {
         super(absolutePossition);
     }
 
