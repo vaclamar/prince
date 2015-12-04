@@ -73,7 +73,7 @@ public class VmStrategy implements GameStrategy {
             }
 
             for (GameObject guard : guards) {
-                if ((guard != null && (guard.getPosition() - prince.getPosition()) * getsign(direction) > 0) ) {
+                if (guard != null && (guard.getPosition() - prince.getPosition()) * getsign(direction) > 0 && guard.getProperty("dead").equals("false")) {
                     Optional<GameObject> princeSword = prince.getStuff().stream().filter(typeFilter("sword")).findFirst();
                     if (!princeSword.isPresent()) {
                         direction = changeDirection(direction);
