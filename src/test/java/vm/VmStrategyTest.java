@@ -56,6 +56,18 @@ public class VmStrategyTest {
         test(game, 200);
     }
 
+    @Test
+    public void testL3WithSG() throws Exception {
+        Game game = new Game("W_I__X__YG");
+        test(game, 200);
+    }
+
+    @Test
+    public void testL3_2() throws Exception {
+        Game game = new Game("W_I__X__Y__Y__G");
+        test(game, 200);
+    }
+
 
     private void test(Game game, int maxSteps) {
         while (game.getStatus().equals(GameStatus.CONTINUE)) {

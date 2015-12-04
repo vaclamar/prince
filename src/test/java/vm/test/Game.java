@@ -4,6 +4,8 @@ import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.action.Enter;
 import cz.yellen.xpg.common.action.Jump;
 import cz.yellen.xpg.common.action.Move;
+import cz.yellen.xpg.common.action.PickUp;
+import cz.yellen.xpg.common.action.Use;
 import cz.yellen.xpg.common.stuff.GameObject;
 import cz.yellen.xpg.common.stuff.GameSituation;
 import cz.yellen.xpg.common.stuff.GameStatus;
@@ -128,6 +130,17 @@ public class Game implements GameSituation {
             Enter enter = (Enter) a;
             if (gameObjects.stream().filter(go -> go.getType().equals("gate") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
                 setStatus(GameStatus.VICTORY);
+            }
+        }
+        if (a instanceof PickUp) {
+            PickUp pickUp = (PickUp) a;
+            gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get().getStuff().add(pickUp.getGameObject());
+            gameObjects.remove(pickUp.getGameObject());
+        }
+        if (a instanceof Use) {
+            Use use = (Use) a;
+            if( use.getTarget().getType().equals("guard") && use.getInstrument().getType().equals("sword")){
+                use.getTarget().getProperties().put("dead","true");
             }
         }
 
