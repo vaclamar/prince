@@ -50,6 +50,12 @@ public class VmStrategyTest {
         test(game, 200);
     }
 
+    @Test
+    public void testL3WithChangeDirection() throws Exception {
+        Game game = new Game("G__X__Y");
+        test(game, 200);
+    }
+
 
     private void test(Game game, int maxSteps) {
         while (game.getStatus().equals(GameStatus.CONTINUE)) {

@@ -53,6 +53,12 @@ public class Game implements GameSituation {
                 case 'G':
                     gameObjects.add(new Gate(i));
                     break;
+                case 'I':
+                    gameObjects.add(new Sword(i));
+                    break;
+                case 'Y':
+                    gameObjects.add(new Guard(i));
+                    break;
             }
         }
     }
@@ -87,6 +93,10 @@ public class Game implements GameSituation {
                 return 'U';
             case "wall":
                 return 'W';
+            case "sword":
+                return  'I';
+            case "guard":
+                return  'Y';
 
         }
         return '_';  //To change body of created methods use File | Settings | File Templates.
