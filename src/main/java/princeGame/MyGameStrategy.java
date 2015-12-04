@@ -14,6 +14,7 @@ import cz.yellen.xpg.common.stuff.GameSituation;
 
 import java.util.Set;
 
+import static cz.yellen.xpg.common.action.Direction.*;
 import static java.lang.Integer.parseInt;
 
 public class MyGameStrategy implements GameStrategy {
@@ -22,7 +23,7 @@ public class MyGameStrategy implements GameStrategy {
     private GameObject sword;
     private Set<GameObject> gameObjects;
     private Action action;
-    private Direction direction = Direction.FORWARD;
+    private Direction direction = FORWARD;
     private GameObject inventoryBottle;
     private GameSituation gameSituation;
 
@@ -62,25 +63,20 @@ public class MyGameStrategy implements GameStrategy {
             }
 
             for (GameObject gameObject : gameObjects) {
-                if (gameObject.getType().equals("bottle")) {
-                    action = actionForBottle(gameObject);
+                if (gameObject.getType().equals("guard") && gameObject.getProperties().get("dead").equals("false")) {
+                    action = actionForGuard(gameObject);
                     if (action == null) {
-                        continue;
+                        step(gameSituation);
                     } else {
                         return action;
                     }
+
                 }
             }
 
             for (GameObject gameObject : gameObjects) {
-                if (gameObject.getType().equals("guard") && gameObject.getProperties().get("dead").equals("false")) {
-                    if (parseInt(prince.getProperties().get("health")) > parseInt(gameObject.getProperties().get("health"))) {
-                        action = actionForGuard(gameObject);
-                    } else {
-                        changeDirection();
-                        return step(situation);
-                    }
-
+                if (gameObject.getType().equals("bottle")) {
+                    action = actionForBottle(gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -143,7 +139,7 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     private Action actionForGuard(GameObject guard) {
-        if (direction == Direction.FORWARD && guard.getPosition() == prince.getPosition() + 1) {
+        if (isBefore(guard)) {
             for (GameObject stuff : prince.getStuff()) {
                 if (stuff.getType().equals("sword") &&
                         parseInt(guard.getProperty("health")) < parseInt(prince.getProperty("health")) + parseInt(inventoryBottle.getProperty("volume")) - 1) {
@@ -154,39 +150,25 @@ public class MyGameStrategy implements GameStrategy {
                     return null;
                 }
             }
-        } else if (direction == Direction.BACKWARD && guard.getPosition() == prince.getPosition() - 1) {
-            for (GameObject stuff : prince.getStuff()) {
-                if (stuff.getType().equals("sword")) {
-                    sword = stuff;
-                    return attack(guard);
-                } else {
-                    changeDirection();
-                    return null;
-                }
-            }
         }
-
+        changeDirection();
         return null;
     }
 
     private Action actionForPit(GameObject gameObject) {
-        if (direction == Direction.FORWARD && gameObject.getPosition() == prince.getPosition() + 1) {
-            return jump();
-        } else if (direction == Direction.BACKWARD && gameObject.getPosition() == prince.getPosition() - 1) {
+        if (isBefore(gameObject)) {
             return jump();
         }
         return null;
     }
 
     private Action actionForChopper(GameObject chopper) {
-        if (chopper.getProperty("opening").equals("true") && !chopper.getProperty("closing").equals("true")) {
-            if (direction == Direction.FORWARD && chopper.getPosition() == prince.getPosition() + 1) {
+        if (isBefore(chopper)) {
+            if (chopper.getProperty("opening").equals("true") && !chopper.getProperty("closing").equals("true")) {
                 return jump();
-            } else if (direction == Direction.BACKWARD && chopper.getPosition() == prince.getPosition() - 1) {
-                return jump();
+            } else {
+                return waitAction();
             }
-        } else {
-            return waitAction();
         }
         return null;
     }
@@ -200,12 +182,14 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     private Action actionForWall(GameObject gameObject) {
-        if (direction == Direction.FORWARD && gameObject.getPosition() == prince.getPosition() + 1) {
-            changeDirection();
-        } else if (direction == Direction.BACKWARD && gameObject.getPosition() == prince.getPosition() - 1) {
+        if (isBefore(gameObject)) {
             changeDirection();
         }
         return null;
+    }
+
+    boolean isBefore(GameObject gameObject){
+        return (direction == BACKWARD && gameObject.getPosition() == prince.getPosition() - 1) || (direction == FORWARD && gameObject.getPosition() == prince.getPosition() + 1);
     }
 
     private GameObject findPrince() {
@@ -225,10 +209,10 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     private void changeDirection() {
-        if (direction == Direction.FORWARD) {
-            direction = Direction.BACKWARD;
+        if (direction == FORWARD) {
+            direction = BACKWARD;
         } else {
-            direction = Direction.FORWARD;
+            direction = FORWARD;
         }
     }
 
