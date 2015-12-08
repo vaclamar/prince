@@ -107,6 +107,17 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
+            for (GameObject gameObject : gameObjects) {
+                if (isBefore(gameObject) && gameObject.getType().equals("portcullis")) {
+                    action = actionForPortcullis(gameObject);
+                    if (action == null) {
+                        return step(situation);
+                    } else {
+                        return action;
+                    }
+                }
+            }
+
              for (GameObject gameObject : gameObjects) {
                 if (isBefore(gameObject) && gameObject.getType().equals("wall")) {
                     action = actionForWall(gameObject);
@@ -177,12 +188,25 @@ public class MyGameStrategy implements GameStrategy {
         return null;
     }
 
-    private Action actionForGate(GameObject gameObject) {
-        if (gameObject.getPosition() == prince.getPosition()) {
-            return enterGate(gameObject);
-        } else {
-            return null;
+    private Action actionForGate(GameObject gate) {
+        if (gate.getPosition() == prince.getPosition()) {
+            if (gate.getProperty("opened").equals("true") && !gate.getProperty("closed").equals("true")) {
+                return enterGate(gate);
+            }
         }
+        return null;
+    }
+
+        private Action actionForPortcullis(GameObject portcullis) {
+        if (portcullis.getPosition() == prince.getPosition()) {
+            if (portcullis.getProperty("opened").equals("false")) {
+                changeDirection();
+                return null;
+            } else if (portcullis.getProperty("opened").equals("true")) {
+                return null;
+            }
+        }
+        return null;
     }
 
     private Action actionForWall(GameObject gameObject) {
