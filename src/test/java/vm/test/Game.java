@@ -246,4 +246,8 @@ public class Game implements GameSituation {
                 })
                 .filter(go -> Math.abs(go.getPosition()) <= 3).collect(Collectors.toSet());
     }
+
+    public Set<GameObjectImpl> getAllGameObjects() {
+        return gameObjects;
+    }
 }

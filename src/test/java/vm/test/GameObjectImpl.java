@@ -25,7 +25,7 @@ abstract class GameObjectImpl implements GameObject {
     private final boolean moveable;
     private final boolean jumpable;
 
-    protected GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
+    public GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
         this.absolutePossition = absolutePossition;
         this.pickable = pickable;
         this.moveable = moveable;

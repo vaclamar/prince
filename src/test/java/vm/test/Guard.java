@@ -10,7 +10,7 @@ package vm.test;
 public class Guard extends LiveGo {
 
 
-    protected Guard(int absolutePossition) {
+    public Guard(int absolutePossition) {
         super(absolutePossition, false, false, false);
         getProperties().put(HEALTH, "1");
     }
@@ -18,5 +18,15 @@ public class Guard extends LiveGo {
     @Override
     public String getType() {
         return "guard";  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isMoveAble() {
+        return isDead();
+    }
+
+    @Override
+    public boolean isJumpable() {
+        return isDead();
     }
 }

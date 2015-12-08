@@ -9,7 +9,7 @@ package vm.test;
  */
 public class Wall extends GameObjectImpl {
 
-    protected Wall(int absolutePossition) {
+    public Wall(int absolutePossition) {
         super(absolutePossition, false, false, false);
     }
 

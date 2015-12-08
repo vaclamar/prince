@@ -8,7 +8,7 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Gate extends GameObjectImpl {
-    protected Gate(int absolutePossition) {
+    public Gate(int absolutePossition) {
         super(absolutePossition, false, true, true);
         getProperties().put("opened", "true");
         getProperties().put("closed", "false");

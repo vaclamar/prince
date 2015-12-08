@@ -8,7 +8,7 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Sword extends GameObjectImpl {
-    protected Sword(int absolutePossition) {
+    public Sword(int absolutePossition) {
         super(absolutePossition, true, true, true);
     }
 

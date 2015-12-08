@@ -12,7 +12,7 @@ public abstract class LiveGo extends GameObjectImpl {
     public static final String HEALTH = "health";
     public static final String DEAD = "dead";
 
-    LiveGo(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
+    public LiveGo(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
         super(absolutePossition, pickable, moveable, jumpable);
         properties.put(HEALTH, "5");
         properties.put(DEAD, "false");
@@ -27,4 +27,7 @@ public abstract class LiveGo extends GameObjectImpl {
     }
 
 
+    protected boolean isDead() {
+        return Boolean.parseBoolean(getProperty(DEAD));
+    }
 }

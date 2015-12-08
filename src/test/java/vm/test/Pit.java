@@ -9,7 +9,7 @@ package vm.test;
  */
 public class Pit extends GameObjectImpl {
 
-    protected Pit(int absolutePossition) {
+    public Pit(int absolutePossition) {
         super(absolutePossition, false, false, true);
     }
 

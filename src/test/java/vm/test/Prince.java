@@ -8,7 +8,7 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Prince extends LiveGo {
-    protected Prince(int absolutePossition) {
+    public Prince(int absolutePossition) {
         super(absolutePossition, false, true, true);
         getProperties().put(HEALTH, "5");
     }

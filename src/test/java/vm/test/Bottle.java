@@ -8,7 +8,7 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Bottle extends GameObjectImpl {
-    protected Bottle(int absolutePossition) {
+    public Bottle(int absolutePossition) {
         super(absolutePossition, true, true, true);
         getProperties().put("volume", "3");
         getProperties().put("odour", "mint"); //puke
