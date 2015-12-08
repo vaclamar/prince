@@ -13,10 +13,9 @@ import java.util.Set;
  * Time: 15:50
  * To change this template use File | Settings | File Templates.
  */
-public class Prince extends GameObjectImpl {
+public class Prince extends LiveGo {
     protected Prince(int absolutePossition) {
         super(absolutePossition);
-        getProperties().put("health","5");
     }
 
     @Override

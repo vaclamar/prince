@@ -141,8 +141,12 @@ public class MyGameStrategy implements GameStrategy {
     private Action actionForGuard(GameObject guard) {
         if (isBefore(guard)) {
             for (GameObject stuff : prince.getStuff()) {
+                int volume =0;
+                if (inventoryBottle!=null){
+                    volume = parseInt(inventoryBottle.getProperty("volume"));
+                }
                 if (stuff.getType().equals("sword") &&
-                        parseInt(guard.getProperty("health")) < parseInt(prince.getProperty("health")) + parseInt(inventoryBottle.getProperty("volume")) - 1) {
+                        parseInt(guard.getProperty("health")) < parseInt(prince.getProperty("health")) + volume - 1) {
                     sword = stuff;
                     return attack(guard);
                 } else {

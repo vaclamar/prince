@@ -13,13 +13,12 @@ import java.util.Set;
  * Time: 9:33
  * To change this template use File | Settings | File Templates.
  */
-public class Guard extends GameObjectImpl {
+public class Guard extends LiveGo {
 
 
     protected Guard(int absolutePossition) {
         super(absolutePossition);
-        getProperties().put("dead", "false");
-        getProperties().put("health", "3");
+        getProperties().put(HEALTH, "3");
     }
 
     @Override
