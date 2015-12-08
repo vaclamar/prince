@@ -12,6 +12,8 @@ import cz.yellen.xpg.common.action.Wait;
 import cz.yellen.xpg.common.stuff.GameObject;
 import cz.yellen.xpg.common.stuff.GameSituation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static cz.yellen.xpg.common.action.Direction.*;
@@ -26,6 +28,17 @@ public class MyGameStrategy implements GameStrategy {
     private Direction direction = FORWARD;
     private GameObject inventoryBottle;
     private GameSituation gameSituation;
+
+    private Map<Integer, GameObject> saveJumpForward = new HashMap<>();
+    private Map<Integer, GameObject> saveJumpBackward = new HashMap<>();
+
+    public boolean isSaveJump(Integer id) {
+        if (direction == FORWARD) {
+            return saveJumpForward.containsKey(id);
+        } else {
+            return saveJumpBackward.containsKey(id);
+        }
+    }
 
     public Action step(GameSituation situation) {
 
@@ -122,14 +135,20 @@ public class MyGameStrategy implements GameStrategy {
                 if (isBefore(gameObject) && gameObject.getType().equals("portcullis")) {
                     action = actionForPortcullis(gameObject);
                     if (action == null) {
-                        return step(situation);
+
+                        if (gameObject.getProperty("opened").equals("false")) {
+                            return step(situation);
+                        } else {
+                            continue;
+                        }
+
                     } else {
                         return action;
                     }
                 }
             }
 
-             for (GameObject gameObject : gameObjects) {
+            for (GameObject gameObject : gameObjects) {
                 if (isBefore(gameObject) && gameObject.getType().equals("wall")) {
                     action = actionForWall(gameObject);
                     if (action == null) {
@@ -163,8 +182,8 @@ public class MyGameStrategy implements GameStrategy {
     private Action actionForGuard(GameObject guard) {
         if (isBefore(guard)) {
             for (GameObject stuff : prince.getStuff()) {
-                int volume =0;
-                if (inventoryBottle!=null){
+                int volume = 0;
+                if (inventoryBottle != null) {
                     volume = parseInt(inventoryBottle.getProperty("volume"));
                 }
                 if (stuff.getType().equals("sword") &&
@@ -209,20 +228,46 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     private Action actionForTile(GameObject tile) {
-        if(Math.random()* 5 < 1 ) {
-            return jump();
-        } else {
-            return null;
-        }
-    }
-
-        private Action actionForPortcullis(GameObject portcullis) {
-            if (portcullis.getProperty("opened").equals("false")) {
-                changeDirection();
-                return null;
-            } else if (portcullis.getProperty("opened").equals("true")) {
+        if (isBefore(tile)) {
+            if (Math.random() * 2 < 1) {
+                if (isSaveJump(tile.getId())) {
+                    return jump();
+                }
+            } else {
                 return null;
             }
+        }
+        if (tile.getPosition() == prince.getPosition()) {
+            saveJumpBackward.put(tile.getId(), tile);
+            saveJumpForward.put(tile.getId(), tile);
+            for (GameObject gameObject : gameObjects) {
+
+
+                switch (gameObject.getType()) {
+                    case "guard":
+                        if (gameObject.getProperty("dead").equals("true")) {
+                            break;
+                        }
+                    case "pit":
+                    case "chopper":
+                        if (gameObject.getPosition() > prince.getPosition()) {
+                            saveJumpForward.remove(gameObject);
+                        } else {
+                            saveJumpBackward.remove(gameObject);
+                        }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Action actionForPortcullis(GameObject portcullis) {
+        if (portcullis.getProperty("opened").equals("false")) {
+            changeDirection();
+            return null;
+        } else if (portcullis.getProperty("opened").equals("true")) {
+            return null;
+        }
         return null;
     }
 
@@ -233,14 +278,14 @@ public class MyGameStrategy implements GameStrategy {
         return null;
     }
 
-    boolean isBefore(GameObject gameObject){
+    boolean isBefore(GameObject gameObject) {
         return (direction == BACKWARD && gameObject.getPosition() < prince.getPosition()) || (direction == FORWARD && gameObject.getPosition() > prince.getPosition());
     }
 
     private GameObject findPrince() {
         for (GameObject gameObject : gameObjects) {
             if (gameObject.getType().equals("prince")) {
-                if(gameObject.getStuff()!=null){
+                if (gameObject.getStuff() != null) {
                     for (GameObject staff : gameObject.getStuff()) {
                         if (staff.getType().equals("bottle")) {
                             inventoryBottle = staff;
