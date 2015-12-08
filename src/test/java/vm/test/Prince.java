@@ -16,6 +16,7 @@ import java.util.Set;
 public class Prince extends LiveGo {
     protected Prince(int absolutePossition) {
         super(absolutePossition);
+        getProperties().put(HEALTH,"5");
     }
 
     @Override

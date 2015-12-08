@@ -18,7 +18,7 @@ public class Guard extends LiveGo {
 
     protected Guard(int absolutePossition) {
         super(absolutePossition);
-        getProperties().put(HEALTH, "3");
+        getProperties().put(HEALTH, "1");
     }
 
     @Override

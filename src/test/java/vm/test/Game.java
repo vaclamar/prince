@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static vm.test.LiveGo.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
@@ -89,7 +91,7 @@ public class Game implements GameSituation {
     public String toString() {
         Map<Integer, Character> situationMap = new HashMap<>();
         for (GameObjectImpl gameObject : gameObjects) {
-            situationMap.put(gameObject.getAbsolutePossition(), mapToChar(gameObject.getType()));
+            situationMap.put(gameObject.getAbsolutePossition(), KnownGameObject.valueOf(gameObject.getType()).getAlias());
         }
         StringBuffer sb = new StringBuffer();
         for (int i = 0; !situationMap.isEmpty(); i++) {
@@ -102,25 +104,6 @@ public class Game implements GameSituation {
 
         }
         return sb.toString();
-    }
-
-    private Character mapToChar(String type) {
-        switch (type) {
-            case "gate":
-                return 'G';
-            case "prince":
-                return 'X';
-            case "pit":
-                return 'U';
-            case "wall":
-                return 'W';
-            case "sword":
-                return 'I';
-            case "guard":
-                return 'Y';
-
-        }
-        return '_';  //To change body of created methods use File | Settings | File Templates.
     }
 
     public void doAction(Action a) {
@@ -163,8 +146,15 @@ public class Game implements GameSituation {
             }
         }
 
-        gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get().setAbsolutePossition(princePosition);
-        if (gameObjects.stream().filter(go -> go.getType().equals("pit") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
+        Prince prince = (Prince)gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get();
+        prince.setAbsolutePossition(princePosition);
+        if (gameObjects.stream().filter(go -> (go.getType().equals("pit")||(go.getType().equals("guard")&& go.getProperty(DEAD).equals("false"))|| (go.getType().equals("chopper")&& go.getProperty("closing").equals("true"))) && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
+            setStatus(GameStatus.PRINCE_DEAD);
+        }
+
+        //hit by all surroundings guards
+        prince.hit((int) gameObjects.stream().filter(go -> go.getType().equals("guard") && go.getProperty(DEAD).equals("false") && Math.abs(go.getPosition()) == 1).count());
+        if (prince.getProperty(DEAD).equals("true")){
             setStatus(GameStatus.PRINCE_DEAD);
         }
     }
