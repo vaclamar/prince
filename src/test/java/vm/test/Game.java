@@ -18,17 +18,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.*;
 import static vm.test.LiveGo.DEAD;
 
-/**
- * Created with IntelliJ IDEA.
- * User: visy00
- * Date: 03.12.15
- * Time: 15:43
- * To change this template use File | Settings | File Templates.
- */
 public class Game implements GameSituation {
 
     private int stepNr = 0;
@@ -43,7 +38,9 @@ public class Game implements GameSituation {
         pit('U', () -> new Pit(0)),
         prince('X', () -> new Prince(0)),
         sword('I', () -> new Sword(0)),
-        wall('W', () -> new Wall(0));
+        wall('W', () -> new Wall(0)),
+        bottle('b', () -> new Bottle(0));
+
         private final Builder<GameObjectImpl> builder;
 
         private char alias = ' ';
@@ -113,41 +110,75 @@ public class Game implements GameSituation {
             Move move = (Move) a;
             int sign = getsign(move.getDirection());
             princePosition += sign;
-            if (gameObjects.stream().filter(go -> go.getAbsolutePossition() == princePosition && go.getType() == "wall").findFirst().isPresent()) {
-                princePosition -= sign;
+            Optional<GameObjectImpl> notMoveableObject = getOnPositionByPredicate(princePosition, go -> !go.isMoveAble());
+            if (notMoveableObject.isPresent()) {
+                GameObjectImpl go = notMoveableObject.get();
+                fail("try to move to not moveable object " + go);
             }
         }
         if (a instanceof Jump) {
             Jump jump = (Jump) a;
             int sign = getsign(jump.getDirection());
-            Set<GameObjectImpl> walls = gameObjects.stream().filter(go -> go.getType().equals("wall"))
-                    .filter(go -> go.getAbsolutePossition() == princePosition + sign || go.getAbsolutePossition() == princePosition + 2 * sign)
-                    .collect(Collectors.toSet());
-            if (walls.isEmpty()) {
-                princePosition += 2 * sign;
-            } else if (walls.iterator().next().getAbsolutePossition() == princePosition + 2 * sign && walls.size() == 1) {
-                princePosition += sign;
+            Optional<GameObjectImpl> notMoveable = getOnPositionByPredicate(princePosition + sign * 2, go -> !go.isMoveAble());
+            Optional<GameObjectImpl> notJumpable = getOnPositionByPredicate(princePosition + sign, go -> !go.isJumpable());
+
+
+            if (notJumpable.isPresent()) {
+                fail("object " + notJumpable + " is not jumpable");
+            } else if (notMoveable.isPresent()) {
+                fail("object " + notMoveable + " is not moveable");
             }
+            princePosition += sign * 2;
         }
         if (a instanceof Enter) {
-            Enter enter = (Enter) a;
             if (gameObjects.stream().filter(go -> go.getType().equals("gate") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
                 setStatus(GameStatus.VICTORY);
             }
         }
         if (a instanceof PickUp) {
             PickUp pickUp = (PickUp) a;
-            gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get().getStuff().add(pickUp.getGameObject());
-            gameObjects.remove(pickUp.getGameObject());
+            GameObjectImpl go = (GameObjectImpl) (pickUp.getGameObject());
+            if (go.isPickable()
+                    && go.getAbsolutePossition() == prince.getAbsolutePossition()
+                    ) {
+                prince.getStuff().add(go);
+                gameObjects.remove(pickUp.getGameObject());
+            }
+
         }
         if (a instanceof Use) {
             final Use use = (Use) a;
+            if (!prince.getStuff().contains(use.getInstrument())) {
+                fail("cannoc use object which is not in prince stuff");
+            }
+
+            if (use.getInstrument() instanceof Sword) {
+                if (use.getTarget() instanceof Guard) {
+                    Guard guard = (Guard) use.getTarget();
+                    if (Math.abs(guard.getAbsolutePossition() - princePosition) != 1) {
+                        fail("cannot kill guard which is not next to you " + guard);
+                    }
+                    guard.hit(1);
+                } else {
+                    fail("cannot be used sword on " + use.getInstrument());
+                }
+            }
+
+            if (use.getInstrument() instanceof Bottle) {
+                Bottle bottle = (Bottle) use.getInstrument();
+                if (prince != use.getTarget()) {
+                    fail("bottle can be used only on prince not on " + use.getTarget());
+                }
+                prince.hit(-bottle.getLiveAmount());
+            }
+
+
             if (use.getTarget().getType().equals("guard") &&
                     use.getInstrument().getType().equals("sword") &&
                     distance(use.getTarget(), use.getInstrument()) == 1 &&
-                    prince.getStuff().stream().filter(go->go.getId()==use.getInstrument().getId()).findFirst().isPresent()
+                    prince.getStuff().stream().filter(go -> go.getId() == use.getInstrument().getId()).findFirst().isPresent()
                     ) {
-                ((Guard)use.getTarget()).hit(1);
+                ((Guard) use.getTarget()).hit(1);
             }
         }
 
@@ -161,6 +192,10 @@ public class Game implements GameSituation {
         if (prince.getProperty(DEAD).equals("true")) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
+    }
+
+    private Optional<GameObjectImpl> getOnPositionByPredicate(int position, Predicate<GameObjectImpl> filter) {
+        return gameObjects.stream().filter(go -> go.getAbsolutePossition() == position).filter(filter).findFirst();
     }
 
     private int distance(GameObject go1, GameObject go2) {
@@ -209,6 +244,6 @@ public class Game implements GameSituation {
                     go.setPrincePosition(princePosition);
                     return go;
                 })
-                .filter(go -> Math.abs(go.getPosition()) <= 1).collect(Collectors.toSet());
+                .filter(go -> Math.abs(go.getPosition()) <= 3).collect(Collectors.toSet());
     }
 }

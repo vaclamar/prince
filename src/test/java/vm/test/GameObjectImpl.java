@@ -17,14 +17,32 @@ import java.util.Set;
 abstract class GameObjectImpl implements GameObject {
     int absolutePossition = 0;
     int princePosition = 0;
-    private static int CreateId=0;
+    private static int CreateId = 0;
     Map<String, String> properties = new HashMap<>();
     private Set<GameObject> stuff = new HashSet<>();
     private final int id;
+    private final boolean pickable;
+    private final boolean moveable;
+    private final boolean jumpable;
 
-    protected GameObjectImpl(int absolutePossition) {
+    protected GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
         this.absolutePossition = absolutePossition;
-        id=CreateId++;
+        this.pickable = pickable;
+        this.moveable = moveable;
+        this.jumpable = jumpable;
+        id = CreateId++;
+    }
+
+    public boolean isPickable() {
+        return pickable;
+    }
+
+    public boolean isMoveAble() {
+        return moveable;
+    }
+
+    public boolean isJumpable() {
+        return jumpable;
     }
 
     @Override
@@ -62,5 +80,18 @@ abstract class GameObjectImpl implements GameObject {
     @Override
     public Set<GameObject> getStuff() {
         return stuff;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String toString() {
+        return getType() + "{" +
+                ", id=" + id +
+                "absolutePossition=" + absolutePossition +
+                ", properties=" + properties +
+                ", stuff=" + stuff +
+                ", pickable=" + pickable +
+                ", moveable=" + moveable +
+                ", jumpable=" + jumpable +
+                '}';
     }
 }

@@ -9,7 +9,7 @@ package vm.test;
  */
 public class Bottle extends GameObjectImpl {
     protected Bottle(int absolutePossition) {
-        super(absolutePossition);
+        super(absolutePossition, true, true, true);
         getProperties().put("volume", "3");
         getProperties().put("odour", "mint"); //puke
     }
@@ -19,4 +19,11 @@ public class Bottle extends GameObjectImpl {
         return "bottle";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public int getLiveAmount() {
+        Integer volume = Integer.getInteger(getProperty("volume"));
+        if (properties.get("odour").equals("puke")) {
+            return -volume;
+        }
+        return volume;
+    }
 }

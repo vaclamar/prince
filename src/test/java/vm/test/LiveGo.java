@@ -12,21 +12,19 @@ public abstract class LiveGo extends GameObjectImpl {
     public static final String HEALTH = "health";
     public static final String DEAD = "dead";
 
-    LiveGo(int absolutePossition) {
-        super(absolutePossition);
-        properties.put(HEALTH,"5");
+    LiveGo(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
+        super(absolutePossition, pickable, moveable, jumpable);
+        properties.put(HEALTH, "5");
         properties.put(DEAD, "false");
     }
 
-    public void hit(int amount){
+    public void hit(int amount) {
         int health = Integer.parseInt(properties.get(HEALTH)) - amount;
-        properties.put(HEALTH, health +"");
-        if (health <= 0){
-            properties.put(DEAD,"true");
+        properties.put(HEALTH, health + "");
+        if (health <= 0) {
+            properties.put(DEAD, "true");
         }
     }
-
-
 
 
 }

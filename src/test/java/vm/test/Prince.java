@@ -1,11 +1,5 @@
 package vm.test;
 
-import cz.yellen.xpg.common.stuff.GameObject;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
@@ -15,8 +9,8 @@ import java.util.Set;
  */
 public class Prince extends LiveGo {
     protected Prince(int absolutePossition) {
-        super(absolutePossition);
-        getProperties().put(HEALTH,"5");
+        super(absolutePossition, false, true, true);
+        getProperties().put(HEALTH, "5");
     }
 
     @Override
