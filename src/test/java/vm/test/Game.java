@@ -10,10 +10,13 @@ import cz.yellen.xpg.common.action.Use;
 import cz.yellen.xpg.common.stuff.GameObject;
 import cz.yellen.xpg.common.stuff.GameSituation;
 import cz.yellen.xpg.common.stuff.GameStatus;
+import javafx.util.Builder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,40 +29,57 @@ import java.util.stream.Collectors;
  */
 public class Game implements GameSituation {
 
-
     private int stepNr = 0;
     private boolean gameOver = false;
     private int princePosition;
     private Set<GameObjectImpl> gameObjects = new HashSet<>();
     private GameStatus status = GameStatus.CONTINUE;
 
+    enum KnownGameObject {
+        gate('G', () -> new Gate(0)),
+        guard('Y', () -> new Guard(0)),
+        pit('U', () -> new Pit(0)),
+        prince('X', () -> new Prince(0)),
+        sword('I', () -> new Sword(0)),
+        wall('W', () -> new Wall(0));
+        private final Builder<GameObjectImpl> builder;
+
+        private char alias = ' ';
+
+        KnownGameObject(char alias, Builder<GameObjectImpl> builder) {
+            this.alias = alias;
+            this.builder = builder;
+        }
+
+        char getAlias() {
+            return alias;
+        }
+
+        Builder<GameObjectImpl> getBuilder() {
+            return builder;
+        }
+
+        public static KnownGameObject getByAlias(char alias) {
+            Optional<KnownGameObject> first = Arrays.stream(KnownGameObject.values()).filter(go -> go.getAlias() == alias).findFirst();
+            if (first.isPresent()) {
+                return first.get();
+            } else {
+                return null;
+            }
+        }
+    }
 
     public Game(String situation) {
         for (int i = 0; i < situation.length(); i++) {
-            switch (situation.getBytes()[i]) {
-                case 'W':
-                case 'w':
-                    gameObjects.add(new Wall(i));
-                    break;
-                case 'X':
-                case 'x':
-                    gameObjects.add(new Prince(i));
-                    princePosition = i;
-                    break;
-                case 'U':
-                case 'u':
-                    gameObjects.add(new Pit(i));
-                    break;
-                case 'g':
-                case 'G':
-                    gameObjects.add(new Gate(i));
-                    break;
-                case 'I':
-                    gameObjects.add(new Sword(i));
-                    break;
-                case 'Y':
-                    gameObjects.add(new Guard(i));
-                    break;
+            KnownGameObject knownGameObject = KnownGameObject.getByAlias((char) situation.getBytes()[i]);
+            if (knownGameObject != null) {
+                if (knownGameObject==KnownGameObject.prince){
+                    princePosition=i;
+                }
+                GameObjectImpl go = knownGameObject.getBuilder().build();
+                go.setAbsolutePossition(i);
+                gameObjects.add(go);
+
             }
         }
     }
@@ -156,7 +176,7 @@ public class Game implements GameSituation {
             case BACKWARD:
                 return -1;
         }
-        System.err.println("undefined direction "+ direction);
+        System.err.println("undefined direction " + direction);
         return 0;
     }
 
@@ -187,9 +207,9 @@ public class Game implements GameSituation {
     @Override
     public Set<GameObject> getGameObjects() {
         return gameObjects.stream()
-                .map(gameObject -> {
-                    gameObject.setPrincePosition(princePosition);
-                    return gameObject;
+                .map(go -> {
+                    go.setPrincePosition(princePosition);
+                    return go;
                 })
                 .filter(go -> Math.abs(go.getPosition()) <= 1).collect(Collectors.toSet());
     }

@@ -38,10 +38,6 @@ abstract class GameObjectImpl implements GameObject {
         this.absolutePossition = absolutePossition;
     }
 
-    int getPrincePosition() {
-        return princePosition;
-    }
-
     void setPrincePosition(int princePosition) {
         this.princePosition = princePosition;
     }

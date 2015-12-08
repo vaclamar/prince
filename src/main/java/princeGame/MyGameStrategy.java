@@ -63,7 +63,7 @@ public class MyGameStrategy implements GameStrategy {
             }
 
             for (GameObject gameObject : gameObjects) {
-                if (gameObject.getType().equals("guard") && gameObject.getProperties().get("dead").equals("false")) {
+                if (isBefore(gameObject) && gameObject.getType().equals("guard") && gameObject.getProperties().get("dead").equals("false")) {
                     action = actionForGuard(gameObject);
                     if (action == null) {
                         step(gameSituation);
@@ -108,7 +108,7 @@ public class MyGameStrategy implements GameStrategy {
             }
 
              for (GameObject gameObject : gameObjects) {
-                if (gameObject.getType().equals("wall")) {
+                if (isBefore(gameObject) && gameObject.getType().equals("wall")) {
                     action = actionForWall(gameObject);
                     if (action == null) {
                         return step(situation);
@@ -189,7 +189,7 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     boolean isBefore(GameObject gameObject){
-        return (direction == BACKWARD && gameObject.getPosition() == prince.getPosition() - 1) || (direction == FORWARD && gameObject.getPosition() == prince.getPosition() + 1);
+        return (direction == BACKWARD && gameObject.getPosition() < prince.getPosition()) || (direction == FORWARD && gameObject.getPosition() > prince.getPosition());
     }
 
     private GameObject findPrince() {
