@@ -21,8 +21,8 @@ public abstract class LiveGo extends GameObjectImpl {
     public void hit(int amount){
         int health = Integer.parseInt(properties.get(HEALTH)) - amount;
         properties.put(HEALTH, health +"");
-        if (health<0){
-            properties.put(DEAD,"false");
+        if (health <= 0){
+            properties.put(DEAD,"true");
         }
     }
 
