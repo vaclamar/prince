@@ -108,6 +108,17 @@ public class MyGameStrategy implements GameStrategy {
             }
 
             for (GameObject gameObject : gameObjects) {
+                if (gameObject.getType().equals("tile")) {
+                    action = actionForTile(gameObject);
+                    if (action == null) {
+                        continue;
+                    } else {
+                        return action;
+                    }
+                }
+            }
+
+            for (GameObject gameObject : gameObjects) {
                 if (isBefore(gameObject) && gameObject.getType().equals("portcullis")) {
                     action = actionForPortcullis(gameObject);
                     if (action == null) {
@@ -197,15 +208,21 @@ public class MyGameStrategy implements GameStrategy {
         return null;
     }
 
+    private Action actionForTile(GameObject tile) {
+        if(Math.random()* 5 < 1 ) {
+            return jump();
+        } else {
+            return null;
+        }
+    }
+
         private Action actionForPortcullis(GameObject portcullis) {
-        if (portcullis.getPosition() == prince.getPosition()) {
             if (portcullis.getProperty("opened").equals("false")) {
                 changeDirection();
                 return null;
             } else if (portcullis.getProperty("opened").equals("true")) {
                 return null;
             }
-        }
         return null;
     }
 
