@@ -13,11 +13,6 @@ public class Sword extends GameObjectImpl {
     }
 
     @Override
-    public String getType() {
-        return "sword";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public boolean isPickable() {
         return true;
     }

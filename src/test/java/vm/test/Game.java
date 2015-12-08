@@ -39,7 +39,11 @@ public class Game implements GameSituation {
         prince('X', () -> new Prince(0)),
         sword('I', () -> new Sword(0)),
         wall('W', () -> new Wall(0)),
+        tile('_', () -> new Tile(0)),
+        chopper('|', () -> new Chopper(0)),
+        portcullis('#', () -> new Portcullis(0)),
         bottle('b', () -> new Bottle(0));
+
 
         private final Builder<GameObjectImpl> builder;
 
@@ -131,8 +135,11 @@ public class Game implements GameSituation {
             princePosition += sign * 2;
         }
         if (a instanceof Enter) {
-            if (gameObjects.stream().filter(go -> go.getType().equals("gate") && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
+            Optional<GameObjectImpl> gate = gameObjects.stream().filter(go -> go.getType().equals("gate") && go.getAbsolutePossition() == princePosition).findFirst();
+            if (gate.isPresent() && gate.get().getProperty(CloseableGO.OPENED).equals("true")) {
                 setStatus(GameStatus.VICTORY);
+            } else {
+                fail("try to enter into gate which is not opened");
             }
         }
         if (a instanceof PickUp) {
@@ -149,7 +156,7 @@ public class Game implements GameSituation {
         if (a instanceof Use) {
             final Use use = (Use) a;
             if (!prince.getStuff().contains(use.getInstrument())) {
-                fail("cannoc use object which is not in prince stuff");
+                fail("cannot use object which is not in prince stuff");
             }
 
             if (use.getInstrument() instanceof Sword) {

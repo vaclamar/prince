@@ -14,7 +14,7 @@ import java.util.Set;
  * Time: 16:13
  * To change this template use File | Settings | File Templates.
  */
-abstract class GameObjectImpl implements GameObject {
+public abstract class GameObjectImpl implements GameObject {
     int absolutePossition = 0;
     int princePosition = 0;
     private static int CreateId = 0;
@@ -80,6 +80,11 @@ abstract class GameObjectImpl implements GameObject {
     @Override
     public Set<GameObject> getStuff() {
         return stuff;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getType() {
+        return getClass().getSimpleName().toLowerCase();
     }
 
     @Override

@@ -3,25 +3,24 @@ package vm.test;
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
- * Date: 04.12.15
- * Time: 9:33
+ * Date: 08.12.15
+ * Time: 22:06
  * To change this template use File | Settings | File Templates.
  */
-public class Guard extends LiveGo {
+public class Portcullis extends CloseableGO {
 
-
-    public Guard(int absolutePossition) {
+    public Portcullis(int absolutePossition) {
         super(absolutePossition, false, false, false);
-        getProperties().put(HEALTH, "1");
+
     }
 
     @Override
     public boolean isMoveAble() {
-        return isDead();
+        return Boolean.parseBoolean(getProperty(OPENED));
     }
 
     @Override
     public boolean isJumpable() {
-        return isDead();
+        return Boolean.parseBoolean(getProperty(OPENED));
     }
 }

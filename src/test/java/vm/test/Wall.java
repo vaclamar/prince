@@ -12,9 +12,4 @@ public class Wall extends GameObjectImpl {
     public Wall(int absolutePossition) {
         super(absolutePossition, false, false, false);
     }
-
-    @Override
-    public String getType() {
-        return "wall";  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

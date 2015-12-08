@@ -12,9 +12,4 @@ public class Pit extends GameObjectImpl {
     public Pit(int absolutePossition) {
         super(absolutePossition, false, false, true);
     }
-
-    @Override
-    public String getType() {
-        return "pit";  //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

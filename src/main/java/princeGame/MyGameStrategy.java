@@ -45,7 +45,7 @@ public class MyGameStrategy implements GameStrategy {
         prince = findPrince();
 
         if (prince.getHealth() == 1) {
-            return new Use(prince.getFirstFullBottle(), prince.getGameObject());
+            return new Use(prince.getFirstFullBottle().getGameObject(), prince.getGameObject());
         }
 
         if (gameObjects.size() == 1) {
@@ -174,7 +174,7 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action actionForBottle(Bottle bottle) {
         if (prince.isOnSameField(bottle) && !bottle.isPuke()) {
-            return pickUp(bottle);
+            return pickUp(bottle.getGameObject());
         }
         return null;
     }
