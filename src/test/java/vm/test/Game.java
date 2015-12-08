@@ -137,8 +137,14 @@ public class Game implements GameSituation {
         }
         if (a instanceof PickUp) {
             PickUp pickUp = (PickUp) a;
-            gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get().getStuff().add(pickUp.getGameObject());
-            gameObjects.remove(pickUp.getGameObject());
+            GameObjectImpl go = (GameObjectImpl) (pickUp.getGameObject());
+            if(go.isPickable()
+                    && go.getAbsolutePossition()==prince.getAbsolutePossition()
+                    ){
+                prince.getStuff().add(go);
+                gameObjects.remove(pickUp.getGameObject());
+            }
+
         }
         if (a instanceof Use) {
             final Use use = (Use) a;
@@ -209,6 +215,6 @@ public class Game implements GameSituation {
                     go.setPrincePosition(princePosition);
                     return go;
                 })
-                .filter(go -> Math.abs(go.getPosition()) <= 1).collect(Collectors.toSet());
+                .filter(go -> Math.abs(go.getPosition()) <= 3).collect(Collectors.toSet());
     }
 }

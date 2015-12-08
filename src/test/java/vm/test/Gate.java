@@ -23,4 +23,14 @@ public class Gate extends GameObjectImpl {
     public String getType() {
         return "gate";  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public boolean isMoveAble() {
+        return true;
+    }
+
+    @Override
+    public boolean isJumpable() {
+        return true;
+    }
 }

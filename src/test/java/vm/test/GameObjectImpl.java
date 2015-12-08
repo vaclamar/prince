@@ -27,6 +27,15 @@ abstract class GameObjectImpl implements GameObject {
         id=CreateId++;
     }
 
+    public boolean isPickable(){
+        return false;
+    }
+    public boolean isMoveAble(){
+        return false;
+    }
+    public boolean isJumpable(){
+        return false;
+    }
     @Override
     public int getPosition() {
         return absolutePossition - princePosition;  //To change body of implemented methods use File | Settings | File Templates.
