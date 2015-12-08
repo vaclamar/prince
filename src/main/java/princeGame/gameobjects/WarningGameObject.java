@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
-abstract public class WarningGameObject {
+ public class WarningGameObject implements GameObject {
 
     private GameObject gameObject;
 
@@ -28,24 +28,32 @@ abstract public class WarningGameObject {
         return gameObject;
     }
 
+    @Override
     public int getId() {
         return gameObject.getId();
     }
 
-    abstract public String getType();
+    @Override
+    public String getType() {
+        return gameObject.getType();
+    }
 
+    @Override
     public String getProperty(String string) {
         return gameObject.getProperty(string);
     }
 
+    @Override
     public Map<String, String> getProperties() {
         return gameObject.getProperties();
     }
 
+    @Override
     public int getPosition() {
         return gameObject.getPosition();
     }
 
+    @Override
     public Set<GameObject> getStuff() {
         return gameObject.getStuff();
     }
