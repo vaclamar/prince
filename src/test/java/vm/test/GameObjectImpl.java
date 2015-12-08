@@ -17,12 +17,14 @@ import java.util.Set;
 abstract class GameObjectImpl implements GameObject {
     int absolutePossition = 0;
     int princePosition = 0;
-
+    private static int CreateId=0;
     Map<String, String> properties = new HashMap<>();
     private Set<GameObject> stuff = new HashSet<>();
+    private final int id;
 
     protected GameObjectImpl(int absolutePossition) {
         this.absolutePossition = absolutePossition;
+        id=CreateId++;
     }
 
     @Override
@@ -54,7 +56,7 @@ abstract class GameObjectImpl implements GameObject {
 
     @Override
     public int getId() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return id;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

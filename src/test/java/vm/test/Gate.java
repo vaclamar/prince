@@ -15,6 +15,8 @@ import java.util.Set;
 public class Gate extends GameObjectImpl {
     protected Gate(int absolutePossition) {
         super(absolutePossition);
+        getProperties().put("opened","true");
+        getProperties().put("closed", "false");
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static vm.test.LiveGo.*;
+import static vm.test.LiveGo.DEAD;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,8 +75,8 @@ public class Game implements GameSituation {
         for (int i = 0; i < situation.length(); i++) {
             KnownGameObject knownGameObject = KnownGameObject.getByAlias((char) situation.getBytes()[i]);
             if (knownGameObject != null) {
-                if (knownGameObject==KnownGameObject.prince){
-                    princePosition=i;
+                if (knownGameObject == KnownGameObject.prince) {
+                    princePosition = i;
                 }
                 GameObjectImpl go = knownGameObject.getBuilder().build();
                 go.setAbsolutePossition(i);
@@ -108,6 +108,7 @@ public class Game implements GameSituation {
 
     public void doAction(Action a) {
         stepNr++;
+        Prince prince = (Prince) gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get();
         if (a instanceof Move) {
             Move move = (Move) a;
             int sign = getsign(move.getDirection());
@@ -140,23 +141,30 @@ public class Game implements GameSituation {
             gameObjects.remove(pickUp.getGameObject());
         }
         if (a instanceof Use) {
-            Use use = (Use) a;
-            if (use.getTarget().getType().equals("guard") && use.getInstrument().getType().equals("sword")) {
-                use.getTarget().getProperties().put("dead", "true");
+            final Use use = (Use) a;
+            if (use.getTarget().getType().equals("guard") &&
+                    use.getInstrument().getType().equals("sword") &&
+                    distance(use.getTarget(), use.getInstrument()) == 1 &&
+                    prince.getStuff().stream().filter(go->go.getId()==use.getInstrument().getId()).findFirst().isPresent()
+                    ) {
+                ((Guard)use.getTarget()).hit(1);
             }
         }
 
-        Prince prince = (Prince)gameObjects.stream().filter(go -> go.getType().equals("prince")).findFirst().get();
         prince.setAbsolutePossition(princePosition);
-        if (gameObjects.stream().filter(go -> (go.getType().equals("pit")||(go.getType().equals("guard")&& go.getProperty(DEAD).equals("false"))|| (go.getType().equals("chopper")&& go.getProperty("closing").equals("true"))) && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
+        if (gameObjects.stream().filter(go -> (go.getType().equals("pit") || (go.getType().equals("guard") && go.getProperty(DEAD).equals("false")) || (go.getType().equals("chopper") && go.getProperty("closing").equals("true"))) && go.getAbsolutePossition() == princePosition).findFirst().isPresent()) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
 
         //hit by all surroundings guards
         prince.hit((int) gameObjects.stream().filter(go -> go.getType().equals("guard") && go.getProperty(DEAD).equals("false") && Math.abs(go.getPosition()) == 1).count());
-        if (prince.getProperty(DEAD).equals("true")){
+        if (prince.getProperty(DEAD).equals("true")) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
+    }
+
+    private int distance(GameObject go1, GameObject go2) {
+        return Math.abs(go1.getPosition() - go2.getPosition());
     }
 
     private int getsign(Direction direction) {
