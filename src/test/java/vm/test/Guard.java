@@ -1,11 +1,5 @@
 package vm.test;
 
-import cz.yellen.xpg.common.stuff.GameObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
@@ -17,7 +11,7 @@ public class Guard extends LiveGo {
 
 
     protected Guard(int absolutePossition) {
-        super(absolutePossition);
+        super(absolutePossition, false, false, false);
         getProperties().put(HEALTH, "1");
     }
 

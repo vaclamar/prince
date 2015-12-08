@@ -1,10 +1,5 @@
 package vm.test;
 
-import cz.yellen.xpg.common.stuff.GameObject;
-
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created with IntelliJ IDEA.
  * User: visy00
@@ -14,9 +9,10 @@ import java.util.Set;
  */
 public class Gate extends GameObjectImpl {
     protected Gate(int absolutePossition) {
-        super(absolutePossition);
-        getProperties().put("opened","true");
+        super(absolutePossition, false, true, true);
+        getProperties().put("opened", "true");
         getProperties().put("closed", "false");
+
     }
 
     @Override
