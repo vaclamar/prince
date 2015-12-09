@@ -8,13 +8,9 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Sword extends GameObjectImpl {
-    protected Sword(int absolutePossition) {
+    public Sword(int absolutePossition) {
         super(absolutePossition, true, true, true);
-    }
-
-    @Override
-    public String getType() {
-        return "sword";  //To change body of implemented methods use File | Settings | File Templates.
+        setVisibility(1);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Set;
  * Time: 16:13
  * To change this template use File | Settings | File Templates.
  */
-abstract class GameObjectImpl implements GameObject {
+public abstract class GameObjectImpl implements GameObject {
     int absolutePossition = 0;
     int princePosition = 0;
     private static int CreateId = 0;
@@ -24,8 +24,9 @@ abstract class GameObjectImpl implements GameObject {
     private final boolean pickable;
     private final boolean moveable;
     private final boolean jumpable;
+    private int visibility = 3;
 
-    protected GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
+    public GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
         this.absolutePossition = absolutePossition;
         this.pickable = pickable;
         this.moveable = moveable;
@@ -50,11 +51,11 @@ abstract class GameObjectImpl implements GameObject {
         return absolutePossition - princePosition;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    int getAbsolutePossition() {
+    public int getAbsolutePossition() {
         return absolutePossition;
     }
 
-    void setAbsolutePossition(int absolutePossition) {
+    public void setAbsolutePossition(int absolutePossition) {
         this.absolutePossition = absolutePossition;
     }
 
@@ -83,6 +84,11 @@ abstract class GameObjectImpl implements GameObject {
     }
 
     @Override
+    public String getType() {
+        return getClass().getSimpleName().toLowerCase();
+    }
+
+    @Override
     public String toString() {
         return getType() + "{" +
                 ", id=" + id +
@@ -94,4 +100,14 @@ abstract class GameObjectImpl implements GameObject {
                 ", jumpable=" + jumpable +
                 '}';
     }
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
+
+
 }

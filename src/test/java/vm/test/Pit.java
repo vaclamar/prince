@@ -9,17 +9,7 @@ package vm.test;
  */
 public class Pit extends GameObjectImpl {
 
-    protected Pit(int absolutePossition) {
+    public Pit(int absolutePossition) {
         super(absolutePossition, false, false, true);
-    }
-
-    @Override
-    public String getType() {
-        return "pit";  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isJumpable() {
-        return true;
     }
 }

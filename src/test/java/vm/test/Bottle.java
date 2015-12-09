@@ -8,19 +8,18 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Bottle extends GameObjectImpl {
-    protected Bottle(int absolutePossition) {
-        super(absolutePossition, true, true, true);
-        getProperties().put("volume", "3");
-        getProperties().put("odour", "mint"); //puke
-    }
 
-    @Override
-    public String getType() {
-        return "bottle";  //To change body of implemented methods use File | Settings | File Templates.
+    public static final String VOLUME = "volume";
+
+    public Bottle(int absolutePossition) {
+        super(absolutePossition, true, true, true);
+        getProperties().put(VOLUME, "3");
+        getProperties().put("odour", "mint"); //puke
+        setVisibility(1);
     }
 
     public int getLiveAmount() {
-        Integer volume = Integer.getInteger(getProperty("volume"));
+        Integer volume = Integer.parseInt(getProperty(VOLUME));
         if (properties.get("odour").equals("puke")) {
             return -volume;
         }

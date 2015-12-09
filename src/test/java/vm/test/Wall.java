@@ -9,12 +9,7 @@ package vm.test;
  */
 public class Wall extends GameObjectImpl {
 
-    protected Wall(int absolutePossition) {
+    public Wall(int absolutePossition) {
         super(absolutePossition, false, false, false);
-    }
-
-    @Override
-    public String getType() {
-        return "wall";  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
