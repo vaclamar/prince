@@ -1,10 +1,12 @@
 package vm;
 
-import cz.yellen.xpg.common.action.Action;
-import cz.yellen.xpg.common.stuff.GameStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import cz.yellen.xpg.common.GameStrategy;
+import cz.yellen.xpg.common.action.Action;
+import cz.yellen.xpg.common.stuff.GameStatus;
 import princeGame.MyGameStrategy;
 import vm.test.Bottle;
 import vm.test.Game;
@@ -17,8 +19,10 @@ import vm.test.Tile;
 
 public class VmStrategyTest {
 
-    private MyGameStrategy strategy;
-
+	
+    protected GameStrategy strategy;
+    
+    
     @Before
     public void setUp() throws Exception {
         strategy = new MyGameStrategy();
