@@ -172,44 +172,46 @@ public class Game implements GameSituation {
 
         }
         if (a instanceof Use) {
+
             final Use use = (Use) a;
-            if (!prince.getStuff().contains(use.getInstrument())) {
-                fail("cannot use object which is not in prince stuff");
-            }
-
-            if (use.getInstrument() instanceof Sword) {
-                if (use.getTarget() instanceof Guard) {
-                    Guard guard = (Guard) use.getTarget();
-                    if (Math.abs(guard.getAbsolutePossition() - princePosition) != 1) {
-                        fail("cannot kill guard which is not next to you " + guard);
-                    }
-                    guard.hit(1);
-                } else {
-                    fail("cannot be used sword on " + use.getInstrument());
-                }
-            }
-
-            if (use.getInstrument() instanceof Bottle) {
-                Bottle bottle = (Bottle) use.getInstrument();
-                if (prince != use.getTarget()) {
-                    fail("bottle can be used only on prince not on " + use.getTarget());
-                }
-                prince.hit(-bottle.getLiveAmount());
-                bottle.getProperties().put(Bottle.VOLUME, "0");
-            }
-
-            if (use.getTarget().getType().equals("guard") &&
-                    use.getInstrument().getType().equals("sword") &&
-                    distance(use.getTarget(), use.getInstrument()) == 1 &&
-                    prince.getStuff().stream().filter(go -> go.getId() == use.getInstrument().getId()).findFirst().isPresent()
-                    ) {
-                ((Guard) use.getTarget()).hit(1);
-            }
             if (use.getTarget().getType().equals("princess") &&
                     use.getInstrument().getType().equals("prince") &&
                     distance(use.getTarget(), use.getInstrument()) == 1
                     ) {
                 setStatus(GameStatus.VICTORY);
+
+            } else if (!prince.getStuff().contains(use.getInstrument())) {
+                fail("cannot use object which is not in prince stuff");
+            } else {
+
+                if (use.getInstrument() instanceof Sword) {
+                    if (use.getTarget() instanceof Guard) {
+                        Guard guard = (Guard) use.getTarget();
+                        if (Math.abs(guard.getAbsolutePossition() - princePosition) != 1) {
+                            fail("cannot kill guard which is not next to you " + guard);
+                        }
+                        guard.hit(1);
+                    } else {
+                        fail("cannot be used sword on " + use.getInstrument());
+                    }
+                }
+
+                if (use.getInstrument() instanceof Bottle) {
+                    Bottle bottle = (Bottle) use.getInstrument();
+                    if (prince != use.getTarget()) {
+                        fail("bottle can be used only on prince not on " + use.getTarget());
+                    }
+                    prince.hit(-bottle.getLiveAmount());
+                    bottle.getProperties().put(Bottle.VOLUME, "0");
+                }
+
+                if (use.getTarget().getType().equals("guard") &&
+                        use.getInstrument().getType().equals("sword") &&
+                        distance(use.getTarget(), use.getInstrument()) == 1 &&
+                        prince.getStuff().stream().filter(go -> go.getId() == use.getInstrument().getId()).findFirst().isPresent()
+                        ) {
+                    ((Guard) use.getTarget()).hit(1);
+                }
             }
         }
 

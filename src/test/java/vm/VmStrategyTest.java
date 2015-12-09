@@ -1,5 +1,6 @@
 package vm;
 
+import cz.yellen.xpg.common.GameStrategy;
 import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.stuff.GameStatus;
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import vm.test.Tile;
 
 public class VmStrategyTest {
 
-    private MyGameStrategy strategy;
+    protected GameStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
@@ -74,10 +75,10 @@ public class VmStrategyTest {
         test(game, 200);
     }
 
-    @Test
+//    @Test
     public void testImpossible() throws Exception {
         Game game = new Game("W8     X      W");
-        Gate gate = (Gate) game.getAllGameObjects().stream().filter(go -> go.getType().equals("gate")).findFirst().get();
+        Gate gate = (Gate) game.getAllGameObjects().stream().filter(go -> go.getType().equals("princess")).findFirst().get();
         Portcullis port5 = new Portcullis(5);
         port5.close();
         Portcullis port10 = new Portcullis(10);
@@ -181,7 +182,7 @@ public class VmStrategyTest {
 
     @Test
     public void testChopper2R() throws Exception {
-        Game game = new Game("WG| XW");
+        Game game = new Game("W8 | XW");
         test(game, 200);
     }
 
