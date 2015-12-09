@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static cz.yellen.xpg.common.action.Direction.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import princeGame.gameobjects.*;
 
 public class MyGameStrategy implements GameStrategy {
@@ -25,15 +26,47 @@ public class MyGameStrategy implements GameStrategy {
     private Action action;
     private GameSituation gameSituation;
 
-    final private Map<Integer, WarningGameObject> saveJumpForward = new HashMap<>();
-    final private Map<Integer, WarningGameObject> saveJumpBackward = new HashMap<>();
+    public boolean isSaveJump() {
+        List<WarningGameObject> jumpableGameObjects = getJumpableGameObjects();
+        boolean jump = false;
+         if(jumpableGameObjects == null || jumpableGameObjects.isEmpty()) {
+             jump = true;
+         }
+         List<WarningGameObject> moveableGameObjects = getMoveableGameObjects();
+         if(moveableGameObjects == null || moveableGameObjects.isEmpty()) {
+             return true;
+         }
+         return  jump || moveableGameObjects.stream().anyMatch(wgo -> wgo.isJumpOver()) &&
+                 jumpableGameObjects.stream().anyMatch(wgo -> wgo.isStepInto());
+    }
 
-    public boolean isSaveJump(Integer id) {
-        if (prince.getDirection() == FORWARD) {
-            return saveJumpForward.containsKey(id);
-        } else {
-            return saveJumpBackward.containsKey(id);
-        }
+        public boolean isSaveMove() {
+         List<WarningGameObject> moveableGameObjects = getMoveableGameObjects();
+         if(moveableGameObjects == null || moveableGameObjects.isEmpty()) {
+             return true;
+         }
+         Guard g = getGuard();
+         boolean gb = true;
+         if(g != null) {
+             gb =  prince.canFigh(g);
+         }
+         return moveableGameObjects.stream().anyMatch(wgo -> wgo.isStepInto()) && gb;
+    }
+
+     public Guard getGuard() {
+         List<WarningGameObject> ret = gameObjects.stream().filter(wgo -> wgo instanceof Guard).collect(Collectors.toList());
+         if(ret != null && !ret.isEmpty()) {
+             return (Guard)ret.get(0);
+         }
+         return null;
+     }
+
+    public List<WarningGameObject> getJumpableGameObjects() {
+        return gameObjects.stream().filter(wgo -> wgo.getPosition() == prince.getJumpFieldPosition()).collect(Collectors.toList());
+    }
+
+    public List<WarningGameObject> getMoveableGameObjects() {
+        return gameObjects.stream().filter(wgo -> wgo.getPosition() == prince.getMoveFieldPosition()).collect(Collectors.toList());
     }
 
     @Override
@@ -160,7 +193,12 @@ public class MyGameStrategy implements GameStrategy {
             }
         }
 
-        return move();
+        action = move();
+        if (action == null) {
+             return step(situation);
+        } else {
+            return action;
+        }
     }
 
     // ACTIONS FOR OBJECTS
@@ -180,7 +218,7 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action actionForGuard(Guard guard) {
         if (prince.isBefore(guard)) {
-            if (prince.hasSword() && prince.isStrongerWithBottles(guard)) {
+            if (prince.hasSword() && prince.canFigh(guard)) {
                 return attack(guard);
             } else {
                 prince.changeDirection();
@@ -200,7 +238,7 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action actionForChopper(Chopper chopper) {
         if (prince.isBefore(chopper)) {
-            if (chopper.isOpened()) {
+            if (chopper.isJumpOver()) {
                 return jump();
             } else {
                 return waitAction();
@@ -221,26 +259,24 @@ public class MyGameStrategy implements GameStrategy {
     private Action actionForTile(Tile tile) {
         if (prince.isBefore(tile)) {
             if (Math.random() * 3 < 1) {
-                if (isSaveJump(tile.getId())) {
+                if (isSaveJump()) {
                     return jump();
                 }
             } else {
                 return null;
             }
         }
-        if (prince.isOnSameField(tile)) {
-            saveJumpBackward.put(tile.getId(), tile);
-            saveJumpForward.put(tile.getId(), tile);
-            for (WarningGameObject gameObject : gameObjects) {
-                if (gameObject.isDanger()) {
-                    if (prince.isNextForward(gameObject)) {
-                        saveJumpForward.remove(gameObject.getId());
-                    } else if (prince.isNextBackward(gameObject)) {
-                        saveJumpBackward.remove(gameObject.getId());
-                    }
-                }
-            }
-        }
+//        if (prince.isOnSameField(tile)) {
+//            for (WarningGameObject gameObject : gameObjects) {
+//                if (gameObject.isDanger()) {
+//                    if (prince.isNextForward(gameObject)) {
+//                        saveJumpForward.remove(gameObject.getId());
+//                    } else if (prince.isNextBackward(gameObject)) {
+//                        saveJumpBackward.remove(gameObject.getId());
+//                    }
+//                }
+//            }
+//        }
         return null;
     }
 
@@ -279,11 +315,21 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     private Action move() {
+        if(isSaveMove()) {
         return new Move(prince.getDirection());
+        } else {
+            prince.changeDirection();
+            return null;
+        }
     }
 
     private Action jump() {
-        return new Jump(prince.getDirection());
+        if(isSaveJump()) {
+            return new Jump(prince.getDirection());
+        } else {
+            return move();
+        }
+        
     }
 
     private Action waitAction() {

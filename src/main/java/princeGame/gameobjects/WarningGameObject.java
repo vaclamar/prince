@@ -60,10 +60,20 @@ import java.util.Set;
      */
     public void setGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
+         warningStuff = Factory.createList(gameObject.getStuff());
     }
 
     public boolean isDanger() {
         return false;
     }
+
+    public boolean isStepInto() {
+        return true;
+    }
+
+    public boolean isJumpOver() {
+        return true;
+    }
+
 
 }

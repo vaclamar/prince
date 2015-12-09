@@ -31,4 +31,12 @@ public class Guard extends WarningGameObject implements IDeadable {
     public boolean isDanger() {
         return isLive();
     }
+
+    public boolean isStepInto() {
+        return !isLive();
+    }
+
+    public boolean isJumpOver() {
+        return !isLive();
+    }
 }

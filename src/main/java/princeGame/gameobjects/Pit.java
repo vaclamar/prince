@@ -21,4 +21,8 @@ public class Pit extends WarningGameObject {
     public boolean isDanger() {
         return true;
     }
+
+    public boolean isStepInto() {
+        return false;
+    }
 }

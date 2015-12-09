@@ -22,8 +22,15 @@ public class Chopper extends WarningGameObject implements ICloseable {
         return this.getProperty("opening").equals("true");
     }
 
-    @Override
     public boolean isDanger() {
-        return !isOpened();
+        return true;
+    }
+
+    public boolean isStepInto() {
+        return false;
+    }
+
+    public boolean isJumpOver() {
+        return isOpened();
     }
 }

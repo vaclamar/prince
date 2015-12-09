@@ -16,4 +16,12 @@ public class Wall extends WarningGameObject {
     public Wall(GameObject wall) {
         super(wall);
     }
+
+        public boolean isStepInto() {
+        return false;
+    }
+
+    public boolean isJumpOver() {
+        return false;
+    }
 }

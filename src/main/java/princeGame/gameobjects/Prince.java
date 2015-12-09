@@ -33,9 +33,9 @@ public class Prince extends WarningGameObject implements IDeadable {
         return !Boolean.parseBoolean(this.getGameObject().getProperty("dead"));
     }
 
-    public boolean isStrongerWithBottles(IDeadable gameObject) {
+    public boolean canFigh(IDeadable gameObject) {
         //TODO sum of bottle's volume should be used
-        return this.getHealth() + (hasFullBottle()? getFirstFullBottle().getVolume() : 0) > gameObject.getHealth();
+        return (this.getHealth() + (hasFullBottle()? getFirstFullBottle().getVolume() : 0) > gameObject.getHealth());
     }
 
     public boolean isBefore(WarningGameObject gameObject) {
@@ -102,10 +102,19 @@ public class Prince extends WarningGameObject implements IDeadable {
         return getFirstFullBottle() != null;
     }
 
+
     /**
      * @return the direction
      */
     public Direction getDirection() {
         return direction;
+    }
+
+    public int getJumpFieldPosition() {
+        return getDirection() == BACKWARD ? -2 : 2;
+    }
+
+    public int getMoveFieldPosition() {
+        return getDirection() == BACKWARD ? -1 : 1;
     }
 }

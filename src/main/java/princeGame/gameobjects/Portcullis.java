@@ -21,4 +21,16 @@ public class Portcullis extends WarningGameObject implements ICloseable{
     public boolean isOpened() {
         return this.getProperty("opened").equals("true");
     }
+
+    public boolean isDanger() {
+        return false;
+    }
+
+    public boolean isStepInto() {
+        return isOpened();
+    }
+
+    public boolean isJumpOver() {
+        return isOpened();
+    }
 }
