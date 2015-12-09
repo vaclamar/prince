@@ -1,5 +1,9 @@
 package vm;
 
+
+import cz.yellen.xpg.common.GameStrategy;
+import cz.yellen.xpg.common.action.Action;
+import cz.yellen.xpg.common.stuff.GameStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +23,11 @@ import vm.test.Tile;
 
 public class VmStrategyTest {
 
+
 	
     protected GameStrategy strategy;
     
-    
+
     @Before
     public void setUp() throws Exception {
         strategy = new MyGameStrategy();
@@ -30,58 +35,58 @@ public class VmStrategyTest {
 
     @Test
     public void testL1() throws Exception {
-        Game game = new Game("W__X__G");
+        Game game = new Game("W__X__8");
         test(game, 200);
     }
 
     @Test
     public void testL1ChangeDirection() throws Exception {
-        Game game = new Game("G XW");
+        Game game = new Game("8 XW");
         test(game, 200);
     }
 
     @Test
     public void testL2() throws Exception {
-        Game game = new Game("W X U  U G");
+        Game game = new Game("W X U  U 8");
         test(game, 200);
     }
 
 
-    @Test
+//    @Test
     public void testL2UG() throws Exception {
-        Game game = new Game("W X U  UG");
+        Game game = new Game("W X U  U 8");
         test(game, 200);
     }
 
 
     @Test
     public void testL2WithChangeDirection() throws Exception {
-        Game game = new Game("G X U U W");
+        Game game = new Game("8 X U U W");
         test(game, 200);
     }
 
     @Test
     public void testL3WithChangeDirection() throws Exception {
-        Game game = new Game("G XY");
+        Game game = new Game("8 XY");
         test(game, 200);
     }
 
     @Test
     public void testL3WithSG() throws Exception {
-        Game game = new Game("W I X YG");
+        Game game = new Game("W I X Y8");
         test(game, 200);
     }
 
     @Test
     public void testL3_2() throws Exception {
-        Game game = new Game("WI X Y Y G");
+        Game game = new Game("WI X Y Y 8");
         test(game, 200);
     }
 
-    @Test
+//    @Test
     public void testImpossible() throws Exception {
-        Game game = new Game("WG     X      W");
-        Gate gate = (Gate) game.getAllGameObjects().stream().filter(go -> go.getType().equals("gate")).findFirst().get();
+        Game game = new Game("W8     X      W");
+        Gate gate = (Gate) game.getAllGameObjects().stream().filter(go -> go.getType().equals("princess")).findFirst().get();
         Portcullis port5 = new Portcullis(5);
         port5.close();
         Portcullis port10 = new Portcullis(10);
@@ -113,7 +118,7 @@ public class VmStrategyTest {
 
     @Test
     public void testBottlesHell() throws Exception {
-        Game game = new Game("W  XI YGW");
+        Game game = new Game("W  XI Y8W");
         Bottle bottle = new Bottle(1);
         bottle.getProperties().put(Bottle.VOLUME, "5");
         game.getAllGameObjects().add(bottle);
@@ -124,46 +129,46 @@ public class VmStrategyTest {
 
     @Test
     public void testChopper() throws Exception {
-        Game game = new Game("WX|GW");
+        Game game = new Game("WX| 8  W");
         test(game, 200);
     }
 
 
     @Test
     public void testChopper2() throws Exception {
-        Game game = new Game("WX |GW");
+        Game game = new Game("WX | 8W");
         test(game, 200);
     }
 
     @Test
     public void testChopperR() throws Exception {
-        Game game = new Game("WG|XW");
+        Game game = new Game("W8 |XW");
         test(game, 200);
     }
 
     @Test
     public void testPitWall() throws Exception {
-        Game game = new Game("W G   X UW");
+        Game game = new Game("W 8   X UW");
         test(game, 200);
     }
 
 
     @Test
     public void testPitPit() throws Exception {
-        Game game = new Game("W G    X    UU");
+        Game game = new Game("W 8    X    UU");
         test(game, 200);
     }
 
     @Test
     public void testPitChopper() throws Exception {
-        Game game = new Game("W G   X  U|");
+        Game game = new Game("W 8   X  U|");
         test(game, 200);
     }
 
 
     @Test
     public void testChopperPorticullis() throws Exception {
-        Game game = new Game("W    X _   |#GW");
+        Game game = new Game("W    X _   |#8W");
         Portcullis p = (Portcullis) game.getAllGameObjects().stream().filter(go -> go.getType().equals("portcullis")).findFirst().get();
         p.close();
         Tile t1 = (Tile) game.getAllGameObjects().stream().filter(go -> go.getType().equals("tile")).findFirst().get();
@@ -177,7 +182,7 @@ public class VmStrategyTest {
 
     @Test
     public void testChopperPorticullis2() throws Exception {
-        Game game = new Game("W    X    |#GW");
+        Game game = new Game("W    X    |#8W");
         Portcullis p = (Portcullis) game.getAllGameObjects().stream().filter(go -> go.getType().equals("portcullis")).findFirst().get();
         p.open();
         test(game, 200);
@@ -185,7 +190,7 @@ public class VmStrategyTest {
 
     @Test
     public void testChopper2R() throws Exception {
-        Game game = new Game("WG| XW");
+        Game game = new Game("W8 | XW");
         test(game, 200);
     }
 

@@ -6,8 +6,10 @@
 package princeGame.gameobjects;
 
 import cz.yellen.xpg.common.stuff.GameObject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -21,7 +23,7 @@ import java.util.Set;
 
     protected WarningGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
-        warningStuff = Factory.createList(gameObject.getStuff());
+        warningStuff = Factory.createList(gameObject.getStuff(), new ArrayList<Tile>());
     }
 
     /**
@@ -60,7 +62,7 @@ import java.util.Set;
      */
     public void setGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
-         warningStuff = Factory.createList(gameObject.getStuff());
+         warningStuff = Factory.createList(gameObject.getStuff(),new ArrayList<Tile>());
     }
 
     public boolean isDanger() {
@@ -72,6 +74,28 @@ import java.util.Set;
     }
 
     public boolean isJumpOver() {
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.getId());
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WarningGameObject other = (WarningGameObject) obj;
+        if (this.gameObject.getId() != other.gameObject.getId()) {
+            return false;
+        }
         return true;
     }
 

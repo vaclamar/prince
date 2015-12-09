@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class Factory {
 
-    public static WarningGameObject create(GameObject gameObject) {
+    public static WarningGameObject create(GameObject gameObject, List<Tile> closedTiles) {
         switch (gameObject.getType()) {
             case "bottle":
                 return new Bottle(gameObject);
@@ -35,19 +35,25 @@ public class Factory {
             case "sword":
                 return new Sword(gameObject);
             case "tile":
-                return new Tile(gameObject);
+                Tile tile = new Tile(gameObject);
+                if(closedTiles.contains(tile)) {
+                    tile.setCloser(Boolean.TRUE);
+                }
+                return tile;
             case "wall":
                 return new Wall(gameObject);
+            case "princess":
+                return new Princess(gameObject);
             default:
                 System.err.println("Unexpected type " + gameObject.getType());
                 return new WarningGameObject(gameObject);
         }
     }
 
-    public static List<WarningGameObject> createList(Set<GameObject> gameObjects) {
+    public static List<WarningGameObject> createList(Set<GameObject> gameObjects, List<Tile> closedTiles) {
         List<WarningGameObject> ret = new ArrayList<>();
         for (GameObject go : gameObjects) {
-            ret.add(create(go));
+            ret.add(create(go, closedTiles));
         }
         return ret;
     }
