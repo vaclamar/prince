@@ -1,6 +1,5 @@
 package vm.test;
 
-import com.sun.corba.se.spi.monitoring.StatisticsAccumulator;
 import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.action.Direction;
 import cz.yellen.xpg.common.action.Enter;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -37,7 +35,7 @@ public class Game implements GameSituation {
     private GameStatus status = GameStatus.CONTINUE;
 
     enum KnownGameObject {
-        gate('G', () -> new Gate(0)),
+        princess('8', () -> new Princess(0)),
         guard('Y', () -> new Guard(0)),
         pit('U', () -> new Pit(0)),
         prince('X', () -> new Prince(0)),
@@ -102,15 +100,15 @@ public class Game implements GameSituation {
         List<StringBuffer> lines = new ArrayList<>();
         lines.add(new StringBuffer());
 
-        gameObjects.stream().forEach(go->{
-            if(!lines.get(lines.size()-1).toString().equals("")){
+        gameObjects.stream().forEach(go -> {
+            if (!lines.get(lines.size() - 1).toString().equals("")) {
                 lines.add(new StringBuffer());
             }
             for (StringBuffer line : lines) {
-                while (line.length()<=go.getAbsolutePossition()){
+                while (line.length() <= go.getAbsolutePossition()) {
                     line.append(' ');
                 }
-                if(line.charAt(go.getAbsolutePossition()) == ' '){
+                if (line.charAt(go.getAbsolutePossition()) == ' ') {
                     line.deleteCharAt(go.getAbsolutePossition());
                     line.insert(go.getAbsolutePossition(), KnownGameObject.valueOf(go.getType()).getAlias());
                     break;
@@ -119,10 +117,10 @@ public class Game implements GameSituation {
         });
 
         for (StringBuffer line : lines) {
-            if(line.toString().equals("")){
+            if (line.toString().equals("")) {
                 continue;
             }
-            sb.insert(0,line.toString()+'\n');
+            sb.insert(0, line.toString() + '\n');
         }
         return sb.toString();
     }
@@ -197,9 +195,8 @@ public class Game implements GameSituation {
                     fail("bottle can be used only on prince not on " + use.getTarget());
                 }
                 prince.hit(-bottle.getLiveAmount());
-                bottle.getProperties().put(Bottle.VOLUME,"0");
+                bottle.getProperties().put(Bottle.VOLUME, "0");
             }
-
 
             if (use.getTarget().getType().equals("guard") &&
                     use.getInstrument().getType().equals("sword") &&
@@ -207,6 +204,12 @@ public class Game implements GameSituation {
                     prince.getStuff().stream().filter(go -> go.getId() == use.getInstrument().getId()).findFirst().isPresent()
                     ) {
                 ((Guard) use.getTarget()).hit(1);
+            }
+            if (use.getTarget().getType().equals("princess") &&
+                    use.getInstrument().getType().equals("prince") &&
+                    distance(use.getTarget(), use.getInstrument()) == 1
+                    ) {
+                setStatus(GameStatus.VICTORY);
             }
         }
 
@@ -221,9 +224,9 @@ public class Game implements GameSituation {
             setStatus(GameStatus.PRINCE_DEAD);
         }
         //swao choppers
-        gameObjects.stream().filter(go->go.getType().equals(Chopper.class.getSimpleName().toLowerCase())).forEach(go->((Chopper)go).change());
+        gameObjects.stream().filter(go -> go.getType().equals(Chopper.class.getSimpleName().toLowerCase())).forEach(go -> ((Chopper) go).change());
 
-        gameObjects.stream().filter(go->go.getType().equals(Tile.class.getSimpleName().toLowerCase())).filter(go->go.getAbsolutePossition()==prince.getAbsolutePossition()).forEach(go->((Tile)go).doOnStep());
+        gameObjects.stream().filter(go -> go.getType().equals(Tile.class.getSimpleName().toLowerCase())).filter(go -> go.getAbsolutePossition() == prince.getAbsolutePossition()).forEach(go -> ((Tile) go).doOnStep());
     }
 
     private Optional<GameObjectImpl> getOnPositionByPredicate(int position, Predicate<GameObjectImpl> filter) {
