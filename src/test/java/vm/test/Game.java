@@ -221,9 +221,9 @@ public class Game implements GameSituation {
             setStatus(GameStatus.PRINCE_DEAD);
         }
         //swao choppers
-        gameObjects.stream().filter(go->go.getType().equals(Chopper.class.getSimpleName())).forEach(go->((Chopper)go).change());
+        gameObjects.stream().filter(go->go.getType().equals(Chopper.class.getSimpleName().toLowerCase())).forEach(go->((Chopper)go).change());
 
-        gameObjects.stream().filter(go->go.getType().equals(Tile.class.getSimpleName())).forEach(go->((Tile)go).doOnStep());
+        gameObjects.stream().filter(go->go.getType().equals(Tile.class.getSimpleName().toLowerCase())).filter(go->go.getAbsolutePossition()==prince.getAbsolutePossition()).forEach(go->((Tile)go).doOnStep());
     }
 
     private Optional<GameObjectImpl> getOnPositionByPredicate(int position, Predicate<GameObjectImpl> filter) {
