@@ -15,6 +15,7 @@ public class Bottle extends GameObjectImpl {
         super(absolutePossition, true, true, true);
         getProperties().put(VOLUME, "3");
         getProperties().put("odour", "mint"); //puke
+        setVisibility(1);
     }
 
     public int getLiveAmount() {

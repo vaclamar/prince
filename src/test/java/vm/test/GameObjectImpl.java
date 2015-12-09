@@ -24,6 +24,7 @@ public abstract class GameObjectImpl implements GameObject {
     private final boolean pickable;
     private final boolean moveable;
     private final boolean jumpable;
+    private int visibility = 3;
 
     public GameObjectImpl(int absolutePossition, boolean pickable, boolean moveable, boolean jumpable) {
         this.absolutePossition = absolutePossition;
@@ -50,11 +51,11 @@ public abstract class GameObjectImpl implements GameObject {
         return absolutePossition - princePosition;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    int getAbsolutePossition() {
+    public int getAbsolutePossition() {
         return absolutePossition;
     }
 
-    void setAbsolutePossition(int absolutePossition) {
+    public void setAbsolutePossition(int absolutePossition) {
         this.absolutePossition = absolutePossition;
     }
 
@@ -99,4 +100,14 @@ public abstract class GameObjectImpl implements GameObject {
                 ", jumpable=" + jumpable +
                 '}';
     }
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
+
+
 }

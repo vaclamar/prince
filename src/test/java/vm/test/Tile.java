@@ -8,10 +8,11 @@ package vm.test;
  * To change this template use File | Settings | File Templates.
  */
 public class Tile extends GameObjectImpl {
-    private Runnable onStep;
+    private Runnable onStep = ()->{};
 
     public Tile(int absolutePossition) {
         super(absolutePossition, false, true, true);
+        setVisibility(1);
     }
 
     public void doOnStep(){

@@ -10,6 +10,7 @@ package vm.test;
 public class Sword extends GameObjectImpl {
     public Sword(int absolutePossition) {
         super(absolutePossition, true, true, true);
+        setVisibility(1);
     }
 
     @Override

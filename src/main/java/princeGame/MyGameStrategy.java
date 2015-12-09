@@ -238,8 +238,15 @@ public class MyGameStrategy implements GameStrategy {
                         if (!((Guard)gameObject).isLive()) {
                             break;
                         }
+                    case "portcullis":
+                        if(((Portcullis)gameObject).isOpened()){
+                            break;
+                        }else{
+                            ;
+                        }
                     case "pit":
                     case "chopper":
+                    case "wall":
                         if (prince.isNextForward(gameObject)) {
                             saveJumpForward.remove(gameObject.getId());
                         } else if (prince.isNextBackward(gameObject)) {

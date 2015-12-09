@@ -1,5 +1,6 @@
 package vm.test;
 
+import com.sun.corba.se.spi.monitoring.StatisticsAccumulator;
 import cz.yellen.xpg.common.action.Action;
 import cz.yellen.xpg.common.action.Direction;
 import cz.yellen.xpg.common.action.Enter;
@@ -12,12 +13,15 @@ import cz.yellen.xpg.common.stuff.GameSituation;
 import cz.yellen.xpg.common.stuff.GameStatus;
 import javafx.util.Builder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -95,14 +99,30 @@ public class Game implements GameSituation {
             situationMap.put(gameObject.getAbsolutePossition(), KnownGameObject.valueOf(gameObject.getType()).getAlias());
         }
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; !situationMap.isEmpty(); i++) {
-            if (situationMap.containsKey(i)) {
-                sb.append((char) situationMap.get(i));
-                situationMap.remove(i);
-            } else {
-                sb.append('_');
-            }
+        List<StringBuffer> lines = new ArrayList<>();
+        lines.add(new StringBuffer());
 
+        gameObjects.stream().forEach(go->{
+            if(!lines.get(lines.size()-1).toString().equals("")){
+                lines.add(new StringBuffer());
+            }
+            for (StringBuffer line : lines) {
+                while (line.length()<=go.getAbsolutePossition()){
+                    line.append(' ');
+                }
+                if(line.charAt(go.getAbsolutePossition()) == ' '){
+                    line.deleteCharAt(go.getAbsolutePossition());
+                    line.insert(go.getAbsolutePossition(), KnownGameObject.valueOf(go.getType()).getAlias());
+                    break;
+                }
+            }
+        });
+
+        for (StringBuffer line : lines) {
+            if(line.toString().equals("")){
+                continue;
+            }
+            sb.insert(0,line.toString()+'\n');
         }
         return sb.toString();
     }
@@ -128,9 +148,9 @@ public class Game implements GameSituation {
 
 
             if (notJumpable.isPresent()) {
-                fail("object " + notJumpable + " is not jumpable");
+                fail("object " + notJumpable.get() + " is not jumpable");
             } else if (notMoveable.isPresent()) {
-                fail("object " + notMoveable + " is not moveable");
+                fail("object " + notMoveable.get() + " is not moveable");
             }
             princePosition += sign * 2;
         }
@@ -177,6 +197,7 @@ public class Game implements GameSituation {
                     fail("bottle can be used only on prince not on " + use.getTarget());
                 }
                 prince.hit(-bottle.getLiveAmount());
+                bottle.getProperties().put(Bottle.VOLUME,"0");
             }
 
 
@@ -199,6 +220,10 @@ public class Game implements GameSituation {
         if (prince.getProperty(DEAD).equals("true")) {
             setStatus(GameStatus.PRINCE_DEAD);
         }
+        //swao choppers
+        gameObjects.stream().filter(go->go.getType().equals(Chopper.class.getSimpleName())).forEach(go->((Chopper)go).change());
+
+        gameObjects.stream().filter(go->go.getType().equals(Tile.class.getSimpleName())).forEach(go->((Tile)go).doOnStep());
     }
 
     private Optional<GameObjectImpl> getOnPositionByPredicate(int position, Predicate<GameObjectImpl> filter) {
@@ -251,7 +276,7 @@ public class Game implements GameSituation {
                     go.setPrincePosition(princePosition);
                     return go;
                 })
-                .filter(go -> Math.abs(go.getPosition()) <= 3).collect(Collectors.toSet());
+                .filter(go -> Math.abs(go.getPosition()) <= go.getVisibility()).collect(Collectors.toSet());
     }
 
     public Set<GameObjectImpl> getAllGameObjects() {
