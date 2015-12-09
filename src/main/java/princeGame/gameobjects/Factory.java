@@ -42,6 +42,8 @@ public class Factory {
                 return tile;
             case "wall":
                 return new Wall(gameObject);
+            case "princess":
+                return new Princess(gameObject);
             default:
                 System.err.println("Unexpected type " + gameObject.getType());
                 return new WarningGameObject(gameObject);

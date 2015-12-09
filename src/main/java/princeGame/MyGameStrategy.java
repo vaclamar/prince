@@ -108,6 +108,17 @@ public class MyGameStrategy implements GameStrategy {
             return move();
         } else {
             for (WarningGameObject gameObject : gameObjects) {
+                if (gameObject instanceof Princess) {
+                    action = actionForPrincess((Princess) gameObject);
+                    if (action == null) {
+                        continue;
+                    } else {
+                        return action;
+                    }
+                }
+            }
+
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Gate) {
                     action = actionForGate((Gate) gameObject);
                     if (action == null) {
@@ -225,6 +236,13 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     // ACTIONS FOR OBJECTS
+    private Action actionForPrincess(Princess princess) {
+        if (prince.isBefore(princess)) {
+            return usePrincess(princess);
+        }
+        return null;
+    }
+
     private Action actionForSword(Sword sword) {
         if (prince.isOnSameField(sword)) {
             return pickUp(sword);
@@ -375,6 +393,10 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action attack(WarningGameObject enemy) {
         return new Use(prince.getSword().getGameObject(), enemy.getGameObject());
+    }
+
+    private Action usePrincess(Princess princess) {
+        return new Use(prince.getGameObject(), princess.getGameObject());
     }
 
     private Action pickUp(WarningGameObject item) {
