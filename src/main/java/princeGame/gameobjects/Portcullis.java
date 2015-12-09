@@ -27,6 +27,7 @@ public class Portcullis extends WarningGameObject implements ICloseable{
     }
 
     public boolean isStepInto() {
+
         return isOpened();
     }
 

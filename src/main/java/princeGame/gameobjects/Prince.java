@@ -35,7 +35,7 @@ public class Prince extends WarningGameObject implements IDeadable {
 
     public boolean canFigh(IDeadable gameObject) {
         //TODO sum of bottle's volume should be used
-        return (this.getHealth() + (hasFullBottle()? getFirstFullBottle().getVolume() : 0) > gameObject.getHealth());
+        return hasSword() && (this.getHealth() + (hasFullBottle()? getFirstFullBottle().getVolume() : 0) > gameObject.getHealth());
     }
 
     public boolean isBefore(WarningGameObject gameObject) {

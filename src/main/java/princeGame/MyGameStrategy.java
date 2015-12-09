@@ -48,13 +48,13 @@ public class MyGameStrategy implements GameStrategy {
          Guard g = getGuard();
          boolean gb = true;
          if(g != null) {
-             gb =  prince.canFigh(g);
+             gb = prince.canFigh(g);
          }
          return moveableGameObjects.stream().anyMatch(wgo -> wgo.isStepInto()) && gb;
     }
 
      public Guard getGuard() {
-         List<WarningGameObject> ret = gameObjects.stream().filter(wgo -> wgo instanceof Guard).collect(Collectors.toList());
+         List<WarningGameObject> ret = getJumpableGameObjects().stream().filter(wgo -> wgo instanceof Guard).collect(Collectors.toList());
          if(ret != null && !ret.isEmpty()) {
              return (Guard)ret.get(0);
          }
@@ -218,7 +218,7 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action actionForGuard(Guard guard) {
         if (prince.isBefore(guard)) {
-            if (prince.hasSword() && prince.canFigh(guard)) {
+            if (prince.canFigh(guard)) {
                 return attack(guard);
             } else {
                 prince.changeDirection();

@@ -163,7 +163,20 @@ public class VmStrategyTest {
         Portcullis p = (Portcullis) game.getAllGameObjects().stream().filter(go -> go.getType().equals("portcullis")).findFirst().get();
         p.close();
         Tile t1 = (Tile) game.getAllGameObjects().stream().filter(go -> go.getType().equals("tile")).findFirst().get();
-        t1.setOnStep(()->p.change());
+       
+        t1.setOnStep(() -> {
+            System.out.println("aaa" + p.getProperty("opened"));
+            p.change();
+            System.out.println("bbb" + p.getProperty("opened"));
+        });
+        test(game, 200);
+    }
+
+    @Test
+    public void testChopperPorticullis2() throws Exception {
+        Game game = new Game("W    X    |#GW");
+        Portcullis p = (Portcullis) game.getAllGameObjects().stream().filter(go -> go.getType().equals("portcullis")).findFirst().get();
+        p.open();
         test(game, 200);
     }
 
