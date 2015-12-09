@@ -8,7 +8,7 @@ import cz.yellen.xpg.common.action.Move;
 import cz.yellen.xpg.common.action.PickUp;
 import cz.yellen.xpg.common.action.Use;
 import cz.yellen.xpg.common.action.Wait;
-import cz.yellen.xpg.common.stuff.GameObject;
+
 import cz.yellen.xpg.common.stuff.GameSituation;
 
 import java.util.HashMap;
@@ -25,8 +25,8 @@ public class MyGameStrategy implements GameStrategy {
     private Action action;
     private GameSituation gameSituation;
 
-    private Map<Integer, GameObject> saveJumpForward = new HashMap<>();
-    private Map<Integer, GameObject> saveJumpBackward = new HashMap<>();
+    final private Map<Integer, WarningGameObject> saveJumpForward = new HashMap<>();
+    final private Map<Integer, WarningGameObject> saveJumpBackward = new HashMap<>();
 
     public boolean isSaveJump(Integer id) {
         if (prince.getDirection() == FORWARD) {
@@ -45,15 +45,15 @@ public class MyGameStrategy implements GameStrategy {
         prince = findPrince();
 
         if (prince.getHealth() == 1) {
-            return new Use(prince.getFirstFullBottle(), prince.getGameObject());
+            return new Use(prince.getFirstFullBottle().getGameObject(), prince.getGameObject());
         }
 
         if (gameObjects.size() == 1) {
             return move();
         } else {
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Gate) {
-                    action = actionForGate((Gate)gameObject);
+                    action = actionForGate((Gate) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -62,9 +62,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Sword) {
-                    action = actionForSword((Sword)gameObject);
+                    action = actionForSword((Sword) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -73,10 +73,10 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (prince.isBefore(gameObject) && gameObject instanceof Guard) {
-                    Guard guard = (Guard)gameObject;
-                    if(guard.isLive()) {
+                    Guard guard = (Guard) gameObject;
+                    if (guard.isLive()) {
                         action = actionForGuard(guard);
                         if (action == null) {
                             step(gameSituation);
@@ -87,9 +87,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Bottle) {
-                    action = actionForBottle((Bottle)gameObject);
+                    action = actionForBottle((Bottle) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -98,9 +98,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Chopper) {
-                    action = actionForChopper(new Chopper(gameObject));
+                    action = actionForChopper((Chopper) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -109,9 +109,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Pit) {
-                    action = actionForPit((Pit)gameObject);
+                    action = actionForPit((Pit) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -120,9 +120,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (gameObject instanceof Tile) {
-                    action = actionForTile((Tile)gameObject);
+                    action = actionForTile((Tile) gameObject);
                     if (action == null) {
                         continue;
                     } else {
@@ -131,9 +131,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (prince.isBefore(gameObject) && gameObject instanceof Portcullis) {
-                    Portcullis portcullis = (Portcullis)gameObject;
+                    Portcullis portcullis = (Portcullis) gameObject;
                     action = actionForPortcullis(portcullis);
                     if (action == null) {
                         if (!portcullis.isOpened()) {
@@ -148,9 +148,9 @@ public class MyGameStrategy implements GameStrategy {
                 }
             }
 
-            for (GameObject gameObject : gameObjects) {
+            for (WarningGameObject gameObject : gameObjects) {
                 if (prince.isBefore(gameObject) && gameObject instanceof Wall) {
-                    action = actionForWall((Wall)gameObject);
+                    action = actionForWall((Wall) gameObject);
                     if (action == null) {
                         return step(situation);
                     } else {
@@ -164,10 +164,9 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     // ACTIONS FOR OBJECTS
-
     private Action actionForSword(Sword sword) {
         if (prince.isOnSameField(sword)) {
-            return pickUp(sword.getGameObject());
+            return pickUp(sword);
         }
         return null;
     }
@@ -181,12 +180,12 @@ public class MyGameStrategy implements GameStrategy {
 
     private Action actionForGuard(Guard guard) {
         if (prince.isBefore(guard)) {
-                if (prince.hasSword() && prince.isStrongerWithBottles(guard)) {
-                    return attack(guard.getGameObject());
-                } else {
-                    prince.changeDirection();
-                    return null;
-                }
+            if (prince.hasSword() && prince.isStrongerWithBottles(guard)) {
+                return attack(guard);
+            } else {
+                prince.changeDirection();
+                return null;
+            }
         }
         prince.changeDirection();
         return null;
@@ -232,19 +231,13 @@ public class MyGameStrategy implements GameStrategy {
         if (prince.isOnSameField(tile)) {
             saveJumpBackward.put(tile.getId(), tile);
             saveJumpForward.put(tile.getId(), tile);
-            for (GameObject gameObject : gameObjects) {
-                switch (gameObject.getType()) {
-                    case "guard":
-                        if (!((Guard)gameObject).isLive()) {
-                            break;
-                        }
-                    case "pit":
-                    case "chopper":
-                        if (prince.isNextForward(gameObject)) {
-                            saveJumpForward.remove(gameObject.getId());
-                        } else if (prince.isNextBackward(gameObject)) {
-                            saveJumpBackward.remove(gameObject.getId());
-                        }
+            for (WarningGameObject gameObject : gameObjects) {
+                if (gameObject.isDanger()) {
+                    if (prince.isNextForward(gameObject)) {
+                        saveJumpForward.remove(gameObject.getId());
+                    } else if (prince.isNextBackward(gameObject)) {
+                        saveJumpBackward.remove(gameObject.getId());
+                    }
                 }
             }
         }
@@ -266,12 +259,11 @@ public class MyGameStrategy implements GameStrategy {
         return null;
     }
 
-
     private Prince findPrince() {
         for (WarningGameObject gameObject : gameObjects) {
             if (gameObject instanceof Prince) {
-                if(prince == null) {
-                    return (Prince)gameObject;
+                if (prince == null) {
+                    return (Prince) gameObject;
                 } else {
                     prince.setGameObject(gameObject.getGameObject());
                     return prince;
@@ -282,8 +274,8 @@ public class MyGameStrategy implements GameStrategy {
     }
 
     // PRINCE ACTIONS
-    private Action enterGate(GameObject gameObject) {
-        return new Enter(gameObject);
+    private Action enterGate(WarningGameObject gameObject) {
+        return new Enter(gameObject.getGameObject());
     }
 
     private Action move() {
@@ -298,11 +290,11 @@ public class MyGameStrategy implements GameStrategy {
         return new Wait();
     }
 
-    private Action attack(GameObject enemy) {
-        return new Use(prince.getSword().getGameObject(), enemy);
+    private Action attack(WarningGameObject enemy) {
+        return new Use(prince.getSword().getGameObject(), enemy.getGameObject());
     }
 
-    private Action pickUp(GameObject item) {
-        return new PickUp(item);
+    private Action pickUp(WarningGameObject item) {
+        return new PickUp(item.getGameObject());
     }
 }

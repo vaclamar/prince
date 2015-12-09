@@ -11,7 +11,7 @@ import cz.yellen.xpg.common.stuff.GameObject;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
-public class Sword extends WarningGameObject implements Pickable{
+public class Sword extends WarningGameObject implements IPickable{
 
     public Sword(GameObject sword) {
         super(sword);

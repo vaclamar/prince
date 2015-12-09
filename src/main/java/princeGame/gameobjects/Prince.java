@@ -38,11 +38,11 @@ public class Prince extends WarningGameObject implements IDeadable {
         return this.getHealth() + (hasFullBottle()? getFirstFullBottle().getVolume() : 0) > gameObject.getHealth();
     }
 
-    public boolean isBefore(GameObject gameObject) {
+    public boolean isBefore(WarningGameObject gameObject) {
         return (getDirection() == BACKWARD && gameObject.getPosition() == this.getPosition() - 1) || (getDirection() == FORWARD && gameObject.getPosition() == this.getPosition() + 1);
     }
 
-    public boolean isOnSameField(GameObject gameObject) {
+    public boolean isOnSameField(WarningGameObject gameObject) {
         return gameObject.getPosition() == this.getPosition();
     }
 
@@ -54,19 +54,19 @@ public class Prince extends WarningGameObject implements IDeadable {
         }
     }
 
-    public boolean isNextForward(GameObject gameObject) {
+    public boolean isNextForward(WarningGameObject gameObject) {
         return gameObject.getPosition() == this.getPosition() + 1;
     }
 
-    public boolean isNextBackward(GameObject gameObject) {
+    public boolean isNextBackward(WarningGameObject gameObject) {
         return gameObject.getPosition() == this.getPosition() - 1;
     }
 
     public List<Bottle> getBottles() {
         List<Bottle> ret = new ArrayList<>();
-        for (GameObject staff : this.getStuff()) {
-            if (staff.getType().equals("bottle")) {
-                Bottle bottle = new Bottle(staff);
+        for (WarningGameObject staff : this.getStuff()) {
+            if (staff instanceof Bottle) {
+                Bottle bottle = (Bottle)staff;
                 if(!bottle.isPuke()) {
                     ret.add(bottle);
                 }
@@ -86,9 +86,9 @@ public class Prince extends WarningGameObject implements IDeadable {
     }
 
     public Sword getSword() {
-        for (GameObject staff : this.getStuff()) {
-            if (staff.getType().equals("sword")) {
-                return new Sword(staff);
+        for (WarningGameObject staff : this.getStuff()) {
+            if (staff instanceof Sword) {
+                return (Sword)staff;
             }
         }
         return null;

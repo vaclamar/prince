@@ -9,6 +9,6 @@ package princeGame.gameobjects;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
-public interface Pickable {
+public interface IPickable {
 
 }

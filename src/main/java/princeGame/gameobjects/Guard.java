@@ -26,4 +26,9 @@ public class Guard extends WarningGameObject implements IDeadable {
     public boolean isLive() {
         return !Boolean.parseBoolean(this.getGameObject().getProperty("dead"));
     }
+
+    @Override
+    public boolean isDanger() {
+        return isLive();
+    }
 }

@@ -6,6 +6,7 @@
 package princeGame.gameobjects;
 
 import cz.yellen.xpg.common.stuff.GameObject;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,12 +14,14 @@ import java.util.Set;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
- public class WarningGameObject implements GameObject {
+ public class WarningGameObject {
 
     private GameObject gameObject;
+    private List<WarningGameObject> warningStuff;
 
     protected WarningGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
+        warningStuff = Factory.createList(gameObject.getStuff());
     }
 
     /**
@@ -28,34 +31,28 @@ import java.util.Set;
         return gameObject;
     }
 
-    @Override
     public int getId() {
         return gameObject.getId();
     }
 
-    @Override
     public String getType() {
         return gameObject.getType();
     }
 
-    @Override
     public String getProperty(String string) {
         return gameObject.getProperty(string);
     }
 
-    @Override
     public Map<String, String> getProperties() {
         return gameObject.getProperties();
     }
 
-    @Override
     public int getPosition() {
         return gameObject.getPosition();
     }
 
-    @Override
-    public Set<GameObject> getStuff() {
-        return gameObject.getStuff();
+    public List<WarningGameObject> getStuff() {
+        return warningStuff;
     }
 
     /**
@@ -63,6 +60,10 @@ import java.util.Set;
      */
     public void setGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
+    }
+
+    public boolean isDanger() {
+        return false;
     }
 
 }

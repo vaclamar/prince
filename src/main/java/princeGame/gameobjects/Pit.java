@@ -16,4 +16,9 @@ public class Pit extends WarningGameObject {
     public Pit(GameObject pit) {
         super(pit);
     }
+
+    @Override
+    public boolean isDanger() {
+        return true;
+    }
 }

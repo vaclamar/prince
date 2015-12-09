@@ -11,7 +11,7 @@ import cz.yellen.xpg.common.stuff.GameObject;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
-public class Bottle extends WarningGameObject implements Pickable{
+public class Bottle extends WarningGameObject implements IPickable{
 
     public Bottle(GameObject bottle) {
         super(bottle);

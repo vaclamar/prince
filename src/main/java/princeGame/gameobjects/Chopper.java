@@ -11,7 +11,7 @@ import cz.yellen.xpg.common.stuff.GameObject;
  *
  * @author Martin Vaclavik <martin.vaclavik@teliasonera.com>
  */
-public class Chopper extends WarningGameObject implements ICloseable{
+public class Chopper extends WarningGameObject implements ICloseable {
 
     public Chopper(GameObject chopper) {
         super(chopper);
@@ -20,5 +20,10 @@ public class Chopper extends WarningGameObject implements ICloseable{
     @Override
     public boolean isOpened() {
         return this.getProperty("opening").equals("true");
+    }
+
+    @Override
+    public boolean isDanger() {
+        return !isOpened();
     }
 }
