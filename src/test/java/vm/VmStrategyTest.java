@@ -138,6 +138,26 @@ public class VmStrategyTest {
     }
 
     @Test
+    public void testPitWall() throws Exception {
+        Game game = new Game("W G   X UW");
+        test(game, 200);
+    }
+
+
+    @Test
+    public void testPitPit() throws Exception {
+        Game game = new Game("W G    X    UU");
+        test(game, 200);
+    }
+
+    @Test
+    public void testPitChopper() throws Exception {
+        Game game = new Game("W G   X  U|");
+        test(game, 200);
+    }
+
+
+    @Test
     public void testChopperPorticullis() throws Exception {
         Game game = new Game("W    X _   |#GW");
         Portcullis p = (Portcullis) game.getAllGameObjects().stream().filter(go -> go.getType().equals("portcullis")).findFirst().get();
@@ -145,7 +165,6 @@ public class VmStrategyTest {
         Tile t1 = (Tile) game.getAllGameObjects().stream().filter(go -> go.getType().equals("tile")).findFirst().get();
         t1.setOnStep(()->p.change());
         test(game, 200);
-
     }
 
     @Test
