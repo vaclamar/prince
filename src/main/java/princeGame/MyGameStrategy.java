@@ -44,7 +44,7 @@ public class MyGameStrategy implements GameStrategy {
         gameObjects = Factory.createList(situation.getGameObjects());
         prince = findPrince();
 
-        if (prince.getHealth() == 1) {
+        if (prince.getHealth() == 1 && prince.hasFullBottle()) {
             return new Use(prince.getFirstFullBottle().getGameObject(), prince.getGameObject());
         }
 
